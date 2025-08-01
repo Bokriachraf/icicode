@@ -39,14 +39,14 @@ const [recentCount, setRecentCount] = useState(0)
           </div>
           <div className="topbarIconsContainer">
             <Language />
-            <span className="topIconBadge">1</span>
+           
           </div>
           <div className="topbarIconsContainer">
             <Settings />
           </div>
           <div className="topAvatar">
             <Image
-              src="/rahma.PNG"
+              src="/kacem.jpg"
               alt="Avatar"
               width={40}
               height={40}

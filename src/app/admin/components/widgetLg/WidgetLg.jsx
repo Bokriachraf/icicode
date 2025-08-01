@@ -9,13 +9,13 @@ function WidgetLg() {
 
   return (
     <div className="widgetLg">
-      <h3 className="widgetLgTitle">Derniers dossiers de transit</h3>
+      <h3 className="widgetLgTitle">Derniers inscriptions</h3>
       <table className="widgetLgTable">
         <thead>
           <tr className="widgetLgTr">
-            <th className="widgetLgTh">Client</th>
-            <th className="widgetLgTh">Marchandise</th>
-            <th className="widgetLgTh">Port d’entrée</th>
+            <th className="widgetLgTh">Etudiants</th>
+            <th className="widgetLgTh">Formation</th>
+            <th className="widgetLgTh">Adresse</th>
             <th className="widgetLgTh">Statut</th>
           </tr>
         </thead>
@@ -23,28 +23,28 @@ function WidgetLg() {
           <tr className="widgetLgTr">
             <td className="widgetLgUser">
               <div className="widgetLgInitial">B</div>
-              <span className="widgetLgName">Bizerte Logistique</span>
+              <span className="widgetLgName">Amir ayari</span>
             </td>
-            <td className="widgetLgDate">Pièces automobiles</td>
+            <td className="widgetLgDate">dev web</td>
             <td className="widgetLgAmount">Rades</td>
             <td className="widgetLgStatus"><Button type="Validé" /></td>
           </tr>
           <tr className="widgetLgTr">
             <td className="widgetLgUser">
               <div className="widgetLgInitial">S</div>
-              <span className="widgetLgName">Sahara Freight</span>
+              <span className="widgetLgName">wael jlassi</span>
             </td>
-            <td className="widgetLgDate">Textiles</td>
+            <td className="widgetLgDate">gaming</td>
             <td className="widgetLgAmount">Sfax</td>
             <td className="widgetLgStatus"><Button type="en-attente" /></td>
           </tr>
           <tr className="widgetLgTr">
             <td className="widgetLgUser">
               <div className="widgetLgInitial">T</div>
-              <span className="widgetLgName">Tunis Cargo</span>
+              <span className="widgetLgName"> Chahir werteni</span>
             </td>
-            <td className="widgetLgDate">Produits chimiques</td>
-            <td className="widgetLgAmount">La Goulette</td>
+            <td className="widgetLgDate">MERN</td>
+            <td className="widgetLgAmount">Tunis</td>
             <td className="widgetLgStatus"><Button type="Bloqué" /></td>
           </tr>
         </tbody>

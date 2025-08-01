@@ -46,31 +46,31 @@ function Sidebar() {
             <li className="sidebarListItem">
               <Link href="/admin/inscription" className="link">
                 <Storefront className="sidebarIcon" />
-                Inscriptions clients
+                Inscriptions 
               </Link>
             </li>
             <li className="sidebarListItem">
               <Description className="sidebarIcon" />
-              Documents douaniers
+              Documents 
             </li>
             <li className="sidebarListItem">
               <AssignmentTurnedIn className="sidebarIcon" />
-              Dossiers en transit
+              Dossiers étudiants
             </li>
           </ul>
         </div>
 
         {/* Logistique */}
         <div className="sidebarMenu">
-          <h3 className="sidebarTitle">Logistique</h3>
+          <h3 className="sidebarTitle">Programme</h3>
           <ul className="sidebarList">
             <li className="sidebarListItem">
               <LocalShipping className="sidebarIcon" />
-              Expéditions
+              Formation continue
             </li>
             <li className="sidebarListItem">
               <AssignmentTurnedIn className="sidebarIcon" />
-              Réservations transport
+              Projet fin d'etudes
             </li>
           </ul>
         </div>
@@ -81,7 +81,7 @@ function Sidebar() {
           <ul className="sidebarList">
             <li className="sidebarListItem">
               <AttachMoney className="sidebarIcon" />
-              Factures clients
+             Formations
             </li>
             <li className="sidebarListItem">
               <BarChart className="sidebarIcon" />
@@ -92,13 +92,13 @@ function Sidebar() {
 
         {/* Utilisateurs */}
         <div className="sidebarMenu">
-          <h3 className="sidebarTitle">Utilisateurs</h3>
+          <h3 className="sidebarTitle">Etudiants</h3>
           <ul className="sidebarList">
         <li className="sidebarListItem">
-  <Link href="/admin/clients" className="link">
+  {/* <Link href="/admin/clients" className="link">
     <PermIdentity className="sidebarIcon" />
     Clients enregistrés
-  </Link>
+  </Link> */}
 </li>
           </ul>
         </div>
@@ -109,11 +109,11 @@ function Sidebar() {
           <ul className="sidebarList">
             <li className="sidebarListItem">
               <MailOutline className="sidebarIcon" />
-              Mails
+              Emails
             </li>
             <li className="sidebarListItem">
               <DynamicFeed className="sidebarIcon" />
-              Feedbacks
+              Avis
             </li>
             <li className="sidebarListItem">
               <ChatBubbleOutline className="sidebarIcon" />

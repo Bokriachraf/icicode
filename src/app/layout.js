@@ -9,23 +9,23 @@ import 'react-toastify/dist/ReactToastify.css'
 
 export const metadata = {
   title: {
-    default: 'TRK | Plateforme de Suivi Douanier',
-    template: '%s | TRK',
+    default: 'ICiCODE | Centre de formation',
+    template: '%s | ICiCODE',
   },
-  description: 'Plateforme de suivi douanier intelligente et digitalisée.',
+  description: 'Centre de formation',
   other: {
     "google-site-verification": "Bj242K2ybb67aL2y-SBsxH6f0yMNX5VRMl0NGaglJyE",
   },
-  keywords: 'TRK, douane, transit, blockchain, suivi, expédition, conformité',
+  keywords: 'ICiCODE, blockchain, suivi, expédition, conformité',
   robots: 'index, follow',
   authors: [{ name: 'Votre Nom ou Entreprise' }],
   openGraph: {
-    title: 'TRK - Suivi Douanier Digital',
-    siteName: 'TRK',
-    description: 'Suivi intelligent et conformité des expéditions douanières.',
+    title: 'ICiCODE - Suivi Douanier Digital',
+    siteName: 'ICiCODE',
+    description: 'Centre de formation',
     type: 'website',
     locale: 'fr_FR',
-    url: 'https://trk-app.vercel.app',
+    url: 'https://icicode-three.vercel.app/',
   },
 }
 

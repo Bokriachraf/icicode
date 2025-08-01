@@ -173,7 +173,7 @@ Préparation aux certifications et aux entretiens techniques.<br />
   </motion.span>
           </motion.p>
 
-          <Link href="/shipments">
+          <Link href="/formations">
           <motion.button
   whileHover={{ scale: 1.03 }}
   whileTap={{ scale: 0.97 }}

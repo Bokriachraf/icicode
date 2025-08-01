@@ -6,7 +6,7 @@ export default function FeaturedInfo() {
   return (
     <div className="featured">
       <div className="featuredItem">
-        <span className="featuredTitle">Déclarations en Douane</span>
+        <span className="featuredTitle">Nombre d'inscription</span>
         <div className="featuredMoneyContainer">
           <span className="featuredMoney">145</span>
           <span className="featuredMoneyRate">
@@ -17,7 +17,7 @@ export default function FeaturedInfo() {
       </div>
 
       <div className="featuredItem">
-        <span className="featuredTitle">Livraisons Finalisées</span>
+        <span className="featuredTitle">Formations Finalisées</span>
         <div className="featuredMoneyContainer">
           <span className="featuredMoney">72</span>
           <span className="featuredMoneyRate">
@@ -28,7 +28,7 @@ export default function FeaturedInfo() {
       </div>
 
       <div className="featuredItem">
-        <span className="featuredTitle">Délai moyen Dédouanement</span>
+        <span className="featuredTitle">Délai moyen des formations</span>
         <div className="featuredMoneyContainer">
           <span className="featuredMoney">48h</span>
           <span className="featuredMoneyRate">
