@@ -44,9 +44,9 @@ function Sidebar() {
           <h3 className="sidebarTitle">Dossiers</h3>
           <ul className="sidebarList">
             <li className="sidebarListItem">
-              <Link href="/admin/devis" className="link">
+              <Link href="/admin/inscription" className="link">
                 <Storefront className="sidebarIcon" />
-                Devis clients
+                Inscriptions clients
               </Link>
             </li>
             <li className="sidebarListItem">

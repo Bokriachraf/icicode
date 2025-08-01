@@ -4,28 +4,28 @@ import './topbar.css'
 import { NotificationsNone, Language, Settings } from '@mui/icons-material'
 import Image from 'next/image'
 import { useDispatch, useSelector } from 'react-redux'
-import { listAllDevis } from '../../../../redux/actions/devisActions' // ajuste le chemin si besoin
+import { listAllInscription } from '../../../../redux/actions/inscriptionActions' // ajuste le chemin si besoin
 
 function Topbar() {
   const dispatch = useDispatch()
 const [recentCount, setRecentCount] = useState(0)
-  // 📦 Récupère tous les devis pour l'admin
-  const devisAdminList = useSelector((state) => state.devisAdminList)
-  const { loading, error, devis = [] } = devisAdminList || {}
+  // 📦 Récupère tous les inscription pour l'admin
+  const inscriptionAdminList = useSelector((state) => state.inscriptionAdminList)
+  const { loading, error, inscription = [] } = inscriptionAdminList || {}
 
-  // 🔄 Charger les devis à chaque affichage
+  // 🔄 Charger les inscription à chaque affichage
   useEffect(() => {
-    dispatch(listAllDevis())
+    dispatch(listAllInscription())
   }, [dispatch])
   useEffect(() => {
-  if (devis && devis.length > 0) {
-    const nonVus = devis.filter((d) => d.vu === false).length
+  if (inscription && inscription.length > 0) {
+    const nonVus = inscription.filter((d) => d.vu === false).length
     setRecentCount(nonVus)
   }
-}, [devis])
+}, [inscription])
 
-  // 🟡 Compter les devis non vus
-  const nonVusCount = devis.filter((d) => d.vu === false).length
+  // 🟡 Compter les inscription non vus
+  const nonVusCount = inscription.filter((d) => d.vu === false).length
 
   return (
     <div className="bg-black/60 topbar">

@@ -2,17 +2,17 @@
 
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { listAllDevis, marquerTousDevisCommeVus } from '../../../redux/actions/devisActions'
+import { listAllInscription, marquerTousInscriptionCommeVus } from '../../../redux/actions/inscriptionActions'
 import { Loader2, CheckCircle, Clock, AlertCircle, Eye } from 'lucide-react'
 import Link from 'next/link'
 
 
-export default function AdminDevisPage() {
+export default function AdminInscriptionPage() {
   const dispatch = useDispatch()
-  const { loading, devis, error } = useSelector((state) => state.devisAdminList || {})
+  const { loading, inscription, error } = useSelector((state) => state.inscriptionAdminList || {})
 useEffect(() => {
   
-  dispatch(marquerTousDevisCommeVus())
+  dispatch(marquerTousInscriptionCommeVus())
 }, [dispatch])
  
 
@@ -32,7 +32,7 @@ useEffect(() => {
   return (
     <div className="pt-14 pb-24 min-h-screen p-8 bg-gray-50">
       <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
-        Gestion des Devis Clients
+        Gestion des Inscriptions 
       </h1>
 
       {loading ? (
@@ -41,8 +41,8 @@ useEffect(() => {
         </div>
       ) : error ? (
         <div className="text-red-600 text-center font-semibold">{error}</div>
-      ) : devis?.length === 0 ? (
-        <p className="text-center text-gray-500">Aucun devis trouvé.</p>
+      ) : inscription?.length === 0 ? (
+        <p className="text-center text-gray-500">Aucune Inscription trouvé.</p>
       ) : (
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white shadow-md rounded-lg">
@@ -56,7 +56,7 @@ useEffect(() => {
               </tr>
             </thead>
             <tbody>
-              {devis.map((d) => {
+              {inscription.map((d) => {
                 const { Icon, color } = getStatusIcon(d.status)
                 return (
                   <tr key={d._id} className="border-t hover:bg-gray-50">
@@ -70,7 +70,7 @@ useEffect(() => {
                     </td>
                     <td className="p-3 text-sm">
                       <Link
-                        href={`/admin/devis/${d._id}`}
+                        href={`/admin/inscription/${d._id}`}
                         className="text-blue-600 hover:text-blue-800 inline-flex items-center gap-1"
                       >
                         <Eye className="w-4 h-4" /> Détails

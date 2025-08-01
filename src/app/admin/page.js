@@ -19,7 +19,7 @@ export default function AdminDashboardPage() {
     <div className="home">
       <Featuredinfo />
 
-<Chart title="Évolution des demandes de devis" data={chartData} dataKey="demandes" grid />;      <div className="homeWidgets">
+<Chart title="Évolution des demandes des inscriptions" data={chartData} dataKey="demandes" grid />;      <div className="homeWidgets">
         <WidgetSm />
         <WidgetLg />
       </div>
