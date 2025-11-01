@@ -46,6 +46,7 @@ export default function Step1({ onNext }) {
     'IA & Machine Learning',
     'Data Science',
     'Data Analysis',
+    'Mathématiques & Python',
     'Gaming',
     'Digital Marketing',
     'Management',

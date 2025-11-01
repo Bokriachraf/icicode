@@ -46,7 +46,7 @@ const [recentCount, setRecentCount] = useState(0)
           </div>
           <div className="topAvatar">
             <Image
-              src="/kacem.jpg"
+              src="/ia.jpg"
               alt="Avatar"
               width={40}
               height={40}

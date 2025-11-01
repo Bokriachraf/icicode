@@ -9,23 +9,23 @@ import 'react-toastify/dist/ReactToastify.css'
 
 export const metadata = {
   title: {
-    default: 'ICiCODE | Centre de formation',
-    template: '%s | ICiCODE',
+    default: 'CODALOG',
+    template: '%s | CODALOG',
   },
   description: 'Centre de formation',
   other: {
     "google-site-verification": "Bj242K2ybb67aL2y-SBsxH6f0yMNX5VRMl0NGaglJyE",
   },
-  keywords: 'ICiCODE, blockchain, suivi, expédition, conformité',
+  keywords: 'CODALOG, blockchain, suivi, expédition, conformité',
   robots: 'index, follow',
   authors: [{ name: 'Votre Nom ou Entreprise' }],
   openGraph: {
-    title: 'ICiCODE - Suivi Douanier Digital',
-    siteName: 'ICiCODE',
+    title: 'CODALOG - Suivi Douanier Digital',
+    siteName: 'CODALOG',
     description: 'Centre de formation',
     type: 'website',
     locale: 'fr_FR',
-    url: 'https://icicode-three.vercel.app/',
+    url: 'https://codalog.vercel.app/',
   },
 }
 

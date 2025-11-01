@@ -1,10 +1,10 @@
-'use client'
+'use client';
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { signin } from '../../redux/actions/userActions';
-import Loader from '../../components/Loader'; // ✅ Import du loader
+import Loader from '../../components/Loader';
 
 export default function SigninScreen() {
   const [email, setEmail] = useState('');
@@ -12,7 +12,7 @@ export default function SigninScreen() {
 
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirect = searchParams.get('redirect') || '/';
+  const redirect = searchParams.get('redirect') || '/dashboard';
 
   const userSignin = useSelector((state) => state.userSignin || {});
   const { userInfo, loading, error } = userSignin;
@@ -21,28 +21,34 @@ export default function SigninScreen() {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(signin(email, password));
+    dispatch(signin(email, password, router));
   };
 
   useEffect(() => {
     if (userInfo) {
-      router.push(redirect);
+      // ✅ Redirection selon le rôle
+      if (userInfo.isAdmin) {
+        router.push('/admin');
+      } else {
+        router.push(redirect);
+      }
     }
   }, [router, redirect, userInfo]);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       {loading ? (
-        <Loader /> // ✅ Affichage du Loader si loading est true
+        <Loader />
       ) : (
         <form
-          className="bg-white shadow-md rounded-lg p-8 w-full max-w-md"
           onSubmit={submitHandler}
+          className="bg-white shadow-md rounded-lg p-8 w-full max-w-md"
         >
           <h1 className="text-2xl font-semibold text-center mb-6 text-gray-800">
             Connexion
           </h1>
 
+          {/* Message d'erreur */}
           {error && (
             <div className="bg-red-100 text-red-700 px-4 py-2 rounded mb-4">
               {error}
@@ -57,6 +63,7 @@ export default function SigninScreen() {
               type="email"
               id="email"
               placeholder="Entrez votre email"
+              value={email}
               required
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
               onChange={(e) => setEmail(e.target.value)}
@@ -71,6 +78,7 @@ export default function SigninScreen() {
               type="password"
               id="password"
               placeholder="Entrez votre mot de passe"
+              value={password}
               required
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
               onChange={(e) => setPassword(e.target.value)}

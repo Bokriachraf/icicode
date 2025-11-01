@@ -1,15 +1,21 @@
-'use client'
+'use client';
 
-import { useDispatch, useSelector } from 'react-redux'
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { setInscriptionData, submitInscription } from '../../redux/actions/inscriptionActions'
+import { useDispatch, useSelector } from 'react-redux';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import {
+  setInscriptionData,
+  submitInscription,
+} from '../../redux/actions/inscriptionActions';
+import { completeInscription } from '../../redux/actions/userActions';
+import Loader from '../../components/Loader';
 
 export default function Step3({ onPrevious }) {
-  const dispatch = useDispatch()
-  const router = useRouter()
+  const dispatch = useDispatch();
+  const router = useRouter();
 
-  const inscriptionData = useSelector((state) => state.inscription.inscriptionData) || {}
+  const inscriptionData =
+    useSelector((state) => state.inscription.inscriptionData) || {};
 
   const [form, setForm] = useState({
     email: inscriptionData.email || '',
@@ -20,43 +26,46 @@ export default function Step3({ onPrevious }) {
     niveauEtude: inscriptionData.niveauEtude || '',
     sourceDecouverte: inscriptionData.sourceDecouverte || '',
     newsletterConsent: inscriptionData.newsletterConsent || false,
-  })
+  });
 
-  const [message, setMessage] = useState(null)
-  const [loading, setLoading] = useState(false)
+  const [message, setMessage] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target
-    const val = type === 'checkbox' ? checked : value
-    setForm({ ...form, [name]: val })
-  }
+    const { name, value, type, checked } = e.target;
+    const val = type === 'checkbox' ? checked : value;
+    setForm({ ...form, [name]: val });
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     const finalData = {
       ...inscriptionData,
       ...form,
-    }
+    };
 
-    dispatch(setInscriptionData(form)) // mise à jour finale dans Redux
-    setLoading(true)
+    dispatch(setInscriptionData(form)); // ✅ mise à jour finale Redux
+    setLoading(true);
+    setMessage(null);
 
     try {
-      console.log('Données envoyées :', finalData)
-      await dispatch(submitInscription(finalData))
-      setMessage('✅ Inscription soumise avec succès.')
-      router.push('/inscription/suivi')
+      console.log('📤 Données envoyées :', finalData);
+      await dispatch(submitInscription(finalData));
+      await dispatch(completeInscription());
+      setMessage('✅ Inscription soumise et complétée avec succès.');
+      router.push('/inscription/suivi'); // ✅ redirection
     } catch (err) {
-      setMessage('❌ Une erreur est survenue lors de la soumission.')
+      setMessage('❌ Une erreur est survenue lors de la soumission.');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 p-4">
+    <form onSubmit={handleSubmit} className="space-y-4 p-4 bg-white shadow rounded">
       <h2 className="text-lg font-bold">Étape 3 : Compléments</h2>
 
+      {/* Champs */}
       <div>
         <label className="text-xs block mb-1 font-medium">Prénom</label>
         <input
@@ -64,7 +73,8 @@ export default function Step3({ onPrevious }) {
           name="prenom"
           value={form.prenom}
           onChange={handleChange}
-          className="p-1 h-7 text-xs w-full p-2 border rounded"
+          className="p-1 h-7 text-xs w-full border rounded focus:ring-2 focus:ring-yellow-400"
+          required
         />
       </div>
 
@@ -75,7 +85,8 @@ export default function Step3({ onPrevious }) {
           name="nom"
           value={form.nom}
           onChange={handleChange}
-          className="p-1 h-7 text-xs w-full p-2 border rounded"
+          className="p-1 h-7 text-xs w-full border rounded focus:ring-2 focus:ring-yellow-400"
+          required
         />
       </div>
 
@@ -86,7 +97,8 @@ export default function Step3({ onPrevious }) {
           name="email"
           value={form.email}
           onChange={handleChange}
-          className="p-1 h-7 text-xs w-full p-2 border rounded"
+          className="p-1 h-7 text-xs w-full border rounded focus:ring-2 focus:ring-yellow-400"
+          required
         />
       </div>
 
@@ -97,7 +109,7 @@ export default function Step3({ onPrevious }) {
           name="adresse"
           value={form.adresse}
           onChange={handleChange}
-          className="p-1 h-7 text-xs w-full p-2 border rounded"
+          className="p-1 h-7 text-xs w-full border rounded focus:ring-2 focus:ring-yellow-400"
         />
       </div>
 
@@ -109,17 +121,17 @@ export default function Step3({ onPrevious }) {
           placeholder="+216 ..."
           value={form.tel}
           onChange={handleChange}
-          className="p-1 h-7 text-xs w-full p-2 border rounded"
+          className="p-1 h-7 text-xs w-full border rounded focus:ring-2 focus:ring-yellow-400"
         />
       </div>
 
-      <div className="mb-4">
+      <div>
         <label className="text-xs block mb-1 font-medium">Niveau d'étude</label>
         <select
           name="niveauEtude"
           value={form.niveauEtude}
           onChange={handleChange}
-          className="p-1 h-7 text-xs w-full p-2 border rounded"
+          className="p-1 h-7 text-xs w-full border rounded focus:ring-2 focus:ring-yellow-400"
         >
           <option value="">-- Sélectionnez --</option>
           <option value="Secondaire">Secondaire</option>
@@ -130,12 +142,12 @@ export default function Step3({ onPrevious }) {
         </select>
       </div>
 
-      <div className="mb-4">
+      <div>
         <label className="block mb-1">Comment nous avez-vous connu ?</label>
         <div className="flex gap-4 flex-wrap">
           {['Google', 'Facebook', 'Youtube', 'LinkedIn', 'Newsletter', 'Recommandation'].map(
             (source) => (
-              <label key={source} className="flex items-center gap-2">
+              <label key={source} className="flex items-center gap-2 text-xs">
                 <input
                   type="radio"
                   name="sourceDecouverte"
@@ -150,8 +162,8 @@ export default function Step3({ onPrevious }) {
         </div>
       </div>
 
-      <div className="mb-4">
-        <label className="flex items-center gap-2">
+      <div>
+        <label className="flex items-center gap-2 text-xs">
           <input
             type="checkbox"
             name="newsletterConsent"
@@ -162,24 +174,35 @@ export default function Step3({ onPrevious }) {
         </label>
       </div>
 
+      {/* Actions */}
       <div className="flex justify-between items-center">
         <button
           type="button"
           onClick={onPrevious}
-          className="bg-gray-300 px-4 py-2 rounded"
+          className="bg-gray-300 px-4 py-2 rounded text-xs"
         >
           Précédent
         </button>
         <button
           type="submit"
           disabled={loading}
-          className="bg-blue-600 text-white px-4 py-2 rounded"
+          className="bg-blue-600 text-white px-4 py-2 rounded text-xs"
         >
-          {loading ? 'Envoi...' : 'Soumettre'}
+          {loading ? <Loader /> : 'Soumettre'}
         </button>
       </div>
 
-      {message && <p className="mt-4 text-sm">{message}</p>}
+      {/* Message feedback */}
+      {message && (
+        <p
+          className={`mt-4 text-sm ${
+            message.startsWith('✅') ? 'text-green-600' : 'text-red-600'
+          }`}
+        >
+          {message}
+        </p>
+      )}
     </form>
-  )
+  );
 }
+

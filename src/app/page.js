@@ -179,7 +179,7 @@ Préparation aux certifications et aux entretiens techniques.<br />
   whileTap={{ scale: 0.97 }}
   className="mt-5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
 >
-  Découvrir nos formation
+  Découvrir nos formations
 </motion.button>
      
           </Link>

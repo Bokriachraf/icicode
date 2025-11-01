@@ -83,10 +83,10 @@ export default function InscriptionDetailPage() {
               <p><span className="font-semibold text-gray-700">Nom :</span> {inscription.nom}</p>
               <p><span className="font-semibold text-gray-700">Prénom :</span> {inscription.prenom}</p>
               <p><span className="font-semibold text-gray-700">Email :</span> {inscription.email}</p>
-              <p><span className="font-semibold text-gray-700">Téléphone :</span> {inscription.telephone}</p>
+              <p><span className="font-semibold text-gray-700">Téléphone :</span> {inscription.tel}</p>
               <p><span className="font-semibold text-gray-700">Formation choisie :</span> {inscription.formation}</p>
-              <p><span className="font-semibold text-gray-700">Niveau d’études :</span> {inscription.niveauEtudes}</p>
-              <p><span className="font-semibold text-gray-700">Motivation :</span> {inscription.motivation}</p>
+              <p><span className="font-semibold text-gray-700">Disponibilité :</span> {inscription.disponibilite}</p>
+              <p><span className="font-semibold text-gray-700">Mode :</span> {inscription.mode}</p>
             </div>
 
             {inscription.commentaire && (

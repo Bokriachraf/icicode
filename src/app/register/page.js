@@ -1,40 +1,34 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useRouter, useSearchParams } from 'next/navigation';
-import Link from 'next/link';
-import { register } from '../../redux/actions/userActions';
+import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { register } from "../../redux/actions/userActions";
 
 export default function RegisterScreen() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirect = searchParams.get('redirect') || '/';
-
-  const userRegister = useSelector((state) => state.userRegister || {});
-  const { userInfo, loading, error } = userRegister;
+  const redirect = searchParams.get("redirect") || "/";
 
   const dispatch = useDispatch();
+
+  const userRegister = useSelector((state) => state.userRegister || {});
+  const { loading, error } = userRegister;
 
   const submitHandler = (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      alert('Les mots de passe ne correspondent pas.');
+      alert("❌ Les mots de passe ne correspondent pas.");
     } else {
-      dispatch(register(name, email, password));
+      dispatch(register(name, email, password, router));
     }
   };
-
-  useEffect(() => {
-    if (userInfo) {
-      router.push(redirect);
-    }
-  }, [router, redirect, userInfo]);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -46,12 +40,18 @@ export default function RegisterScreen() {
           Créer un compte
         </h1>
 
+        {loading && (
+          <div className="bg-blue-100 text-blue-700 px-4 py-2 rounded mb-4">
+            Création du compte en cours...
+          </div>
+        )}
         {error && (
           <div className="bg-red-100 text-red-700 px-4 py-2 rounded mb-4">
             {error}
           </div>
         )}
 
+        {/* Nom */}
         <div className="mb-4">
           <label htmlFor="name" className="block text-gray-700 mb-1">
             Nom complet
@@ -61,11 +61,13 @@ export default function RegisterScreen() {
             id="name"
             placeholder="Entrez votre nom"
             required
-            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
+            value={name}
             onChange={(e) => setName(e.target.value)}
+            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
           />
         </div>
 
+        {/* Email */}
         <div className="mb-4">
           <label htmlFor="email" className="block text-gray-700 mb-1">
             Adresse e-mail
@@ -75,11 +77,13 @@ export default function RegisterScreen() {
             id="email"
             placeholder="Entrez votre email"
             required
-            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
+            value={email}
             onChange={(e) => setEmail(e.target.value)}
+            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
           />
         </div>
 
+        {/* Mot de passe */}
         <div className="mb-4">
           <label htmlFor="password" className="block text-gray-700 mb-1">
             Mot de passe
@@ -89,11 +93,13 @@ export default function RegisterScreen() {
             id="password"
             placeholder="Entrez votre mot de passe"
             required
-            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
+            value={password}
             onChange={(e) => setPassword(e.target.value)}
+            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
           />
         </div>
 
+        {/* Confirmation */}
         <div className="mb-6">
           <label htmlFor="confirmPassword" className="block text-gray-700 mb-1">
             Confirmez le mot de passe
@@ -103,11 +109,13 @@ export default function RegisterScreen() {
             id="confirmPassword"
             placeholder="Confirmez votre mot de passe"
             required
-            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
+            value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
+            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
           />
         </div>
 
+        {/* Bouton */}
         <button
           type="submit"
           className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-2 px-4 rounded transition duration-200"
@@ -116,7 +124,7 @@ export default function RegisterScreen() {
         </button>
 
         <div className="mt-4 text-sm text-center">
-          Vous avez déjà un compte ?{' '}
+          Vous avez déjà un compte ?{" "}
           <Link
             href={`/signin?redirect=${redirect}`}
             className="text-yellow-500 hover:underline"
@@ -128,3 +136,5 @@ export default function RegisterScreen() {
     </div>
   );
 }
+
+

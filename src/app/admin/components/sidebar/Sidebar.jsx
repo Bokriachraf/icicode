@@ -94,12 +94,13 @@ function Sidebar() {
         <div className="sidebarMenu">
           <h3 className="sidebarTitle">Etudiants</h3>
           <ul className="sidebarList">
-        <li className="sidebarListItem">
-  {/* <Link href="/admin/clients" className="link">
-    <PermIdentity className="sidebarIcon" />
-    Clients enregistrés
-  </Link> */}
-</li>
+           <li className="sidebarListItem">
+            <Link href="/courses" className="link">
+                <AttachMoney className="sidebarIcon" />
+             Cours
+              </Link>
+             
+            </li>
           </ul>
         </div>
 

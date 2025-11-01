@@ -4,9 +4,9 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 import { connectDB } from './config/db.js'
 import shipmentRoutes from './routes/shipmentRoutes.js'
-import devisRoute from './routes/devisRoute.js'
 import inscriptionRoutes from './routes/inscriptionRoutes.js'
 import userRouter from './routes/userRoute.js'
+import courseRouter from './routes/courseRoutes.js'
 
 dotenv.config()
 connectDB()
@@ -19,6 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/users', userRouter);
 app.use('/api/shipments', shipmentRoutes)
 app.use('/api/inscription', inscriptionRoutes)
+app.use('/api/courses', courseRouter)
 
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
