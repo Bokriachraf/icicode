@@ -99,8 +99,8 @@ export default function Navbar() {
             <>
               <li><Link href="/" className="hover:text-yellow-400">Accueil</Link></li>
               <li><Link href="/formations" className="hover:text-yellow-400">Formations</Link></li>
-              <li><Link href="/instructeurs" className="hover:text-yellow-400">Formateurs</Link></li>
-              <li><Link href="/temoignages" className="hover:text-yellow-400">Témoignages</Link></li>
+              <li><Link href="/" className="hover:text-yellow-400">Formateurs</Link></li>
+              <li><Link href="/" className="hover:text-yellow-400">Témoignages</Link></li>
               <li><Link href="/about" className="hover:text-yellow-400">À propos</Link></li>
               <li><Link href="/contact" className="hover:text-yellow-400">Contact</Link></li>
 
