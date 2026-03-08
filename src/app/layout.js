@@ -20,7 +20,7 @@ export const metadata = {
   robots: 'index, follow',
   authors: [{ name: 'Votre Nom ou Entreprise' }],
   openGraph: {
-    title: 'CODALOG - Suivi Douanier Digital',
+    title: 'CODALOG - programmation-mathemathique',
     siteName: 'CODALOG',
     description: 'Centre de formation',
     type: 'website',
