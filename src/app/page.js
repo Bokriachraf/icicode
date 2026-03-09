@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { TypeAnimation } from 'react-type-animation'
+import CodalogLogo from '@/components/CodalogLogo'
 
 const sliderImages = [
   '/web1.webp',
@@ -122,7 +123,7 @@ export default function Home() {
             </motion.button>
           </Link>
         </motion.div>
-
+        <CodalogLogo size={340} showWordmark={true} />
         {/* ---- Bloc droit ---- */}
         <motion.div
           initial={{ y: 80, opacity: 0 }}
