@@ -3,147 +3,135 @@ import Link from "next/link";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { listMyInscription } from "../../../redux/actions/inscriptionActions";
-import {
-  Loader2,
-  AlertCircle,
-  CheckCircle,
-  Clock,
-  GraduationCap,
-} from "lucide-react";
+import { Loader2 } from "lucide-react";
+
+const statutConfig = {
+  'En attente': { bg: 'bg-blue-50',   text: 'text-blue-700',  border: 'border-blue-200',  emoji: '⏳' },
+  'En cours':   { bg: 'bg-orange-50', text: 'text-orange-700',border: 'border-orange-200',emoji: '🔄' },
+  'Validé':     { bg: 'bg-green-50',  text: 'text-green-700', border: 'border-green-200', emoji: '✅' },
+  'Rejeté':     { bg: 'bg-red-50',    text: 'text-red-700',   border: 'border-red-200',   emoji: '❌' },
+}
 
 export default function SuiviInscriptionPage() {
   const dispatch = useDispatch();
-
   const { userInfo } = useSelector((state) => state.userSignin || {});
-  const inscriptionListMy = useSelector((state) => state.inscriptionListMy || {});
-  const { loading, inscription, error } = inscriptionListMy || {};
+  const { loading, inscription, error } = useSelector((state) => state.inscriptionListMy || {});
 
   useEffect(() => {
-    if (userInfo) {
-      dispatch(listMyInscription());
-    }
+    if (userInfo) dispatch(listMyInscription());
   }, [dispatch, userInfo]);
-
-  const getStatusStyle = (status) => {
-    switch (status) {
-      case "Validé":
-        return { color: "text-green-600", Icon: CheckCircle, bg: "bg-green-50" };
-      case "Rejeté":
-        return { color: "text-red-600", Icon: AlertCircle, bg: "bg-red-50" };
-      case "En cours":
-        return {
-          color: "text-orange-500",
-          Icon: () => <Loader2 className="w-4 h-4 animate-spin" />,
-          bg: "bg-orange-50",
-        };
-      case "En attente":
-      default:
-        return { color: "text-blue-500", Icon: Clock, bg: "bg-blue-50" };
-    }
-  };
 
   if (!userInfo) {
     return (
       <div className="p-6 text-center text-gray-600 mt-20">
         <h2 className="text-xl font-semibold mb-3">Connexion requise</h2>
-        <p>Veuillez vous connecter pour consulter vos inscriptions aux formations.</p>
-        <Link
-          href="/login"
-          className="text-blue-600 hover:underline mt-2 inline-block"
-        >
-          Aller à la page de connexion
+        <Link href="/signin" className="text-blue-600 hover:underline">
+          Se connecter
         </Link>
       </div>
     );
   }
 
   return (
-    <div className="p-4 pt-24 pb-24 max-w-5xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">
-        Suivi de vos inscriptions aux formations
-      </h1>
+    <div className="p-4 pt-24 pb-24 max-w-4xl mx-auto">
+      <div className="mb-8">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
+          Mes inscriptions
+        </h1>
+        <p className="text-gray-400 mt-1 text-sm">
+          Suivez l'état de vos demandes de formation
+        </p>
+      </div>
 
       {loading && (
-        <div className="flex items-center justify-center text-gray-600">
-          <Loader2 className="animate-spin mr-2" />
-          Chargement en cours...
+        <div className="flex items-center justify-center py-16 text-gray-400">
+          <Loader2 className="animate-spin mr-2" /> Chargement...
         </div>
       )}
 
       {error && (
-        <div className="text-red-600 text-center mb-4">
-          Une erreur est survenue : {error}
-        </div>
+        <div className="text-red-500 text-center py-8">{error}</div>
       )}
 
       {!loading && inscription?.length === 0 && (
-        <p className="text-center text-gray-500">
-          Aucune inscription trouvée pour le moment.
-        </p>
+        <div className="text-center py-16 text-gray-400">
+          <p className="text-4xl mb-3">📋</p>
+          <p>Aucune inscription pour le moment.</p>
+          <Link href="/inscription"
+            className="mt-4 inline-block bg-green-600 text-white px-5 py-2 rounded-xl text-sm font-medium hover:bg-green-700 transition">
+            S'inscrire à une formation
+          </Link>
+        </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+      <div className="flex flex-col gap-4">
         {inscription?.map((item) => {
-          const { color, Icon, bg } = getStatusStyle(item.status);
+          const statut = item.status || 'En attente'
+          const sc = statutConfig[statut] || statutConfig['En attente']
 
           return (
-            <div
-              key={item._id}
-              className={`p-5 border rounded-xl shadow hover:shadow-md transition duration-200 ${bg}`}
+            <div key={item._id}
+              className={`rounded-2xl border-2 p-5 ${sc.bg} ${sc.border} transition hover:shadow-sm`}
             >
-              <div className="flex justify-between items-center mb-3">
-                <h2 className="font-semibold text-sm text-gray-600">
-                  Référence :{" "}
-                  <span className="text-gray-800 font-mono">{item._id}</span>
-                </h2>
-                <span
-                  className={`flex items-center gap-1 font-medium text-sm ${color}`}
-                >
-                  <Icon className="w-4 h-4" />
-                  {item.status || "En attente"}
-                </span>
+              <div className="flex items-start justify-between gap-3 flex-wrap">
+                <div className="flex-1 space-y-2">
+
+                  {/* Statut */}
+                  <div className={`flex items-center gap-1.5 font-semibold text-sm ${sc.text}`}>
+                    <span>{sc.emoji}</span>
+                    <span>{statut}</span>
+                  </div>
+
+                  {/* Formation */}
+                  <h2 className="text-base font-bold text-gray-800">
+                    {item.formation || 'Formation non spécifiée'}
+                  </h2>
+
+                  {/* Infos */}
+                  <div className="flex flex-wrap gap-3 text-xs text-gray-500">
+                    {item.mode && (
+                      <span className="bg-white border border-gray-200 px-2 py-1 rounded-lg">
+                        🖥️ {item.mode}
+                      </span>
+                    )}
+                    {item.niveauId && (
+                      <span className="bg-white border border-gray-200 px-2 py-1 rounded-lg">
+                        🎓 {item.niveauId.nom}
+                      </span>
+                    )}
+                    {item.createdAt && (
+                      <span className="bg-white border border-gray-200 px-2 py-1 rounded-lg">
+                        📅 {new Date(item.createdAt).toLocaleDateString('fr-FR')}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="flex flex-col gap-2 items-end">
+                  <Link href={`/inscription/${item._id}`}
+                    className="text-sm text-indigo-600 hover:underline font-medium">
+                    Voir les détails →
+                  </Link>
+                  {statut === 'Validé' && (
+                    <Link href="/dashboard"
+                      className="text-sm bg-green-600 text-white px-4 py-1.5 rounded-lg hover:bg-green-700 transition font-medium">
+                      Accéder →
+                    </Link>
+                  )}
+                </div>
               </div>
 
-              <div className="flex items-center gap-3 mb-2">
-                <GraduationCap className="w-5 h-5 text-indigo-500" />
-                <p className="text-gray-800 font-medium">
-                  {item.formation || "Formation non spécifiée"}
-                </p>
-              </div>
-
-              <p className="text-sm text-gray-700">
-                <strong>Date d’inscription :</strong>{" "}
-                {item.createdAt
-                  ? new Date(item.createdAt).toLocaleDateString("fr-FR")
-                  : "Non renseignée"}
-              </p>
-              <Link
-                href={`/inscription/${item._id}`}
-                className="inline-block mt-3 text-sm text-blue-600 hover:underline font-medium"
-              >
-                Voir les détails
-              </Link>
-              {item.status === "Validé" && (
-                <Link
-                  href="/dashboard"
-                  className="inline-block mt-3 text-sm text-indigo-600 hover:underline font-medium"
-                >
-                  Accéder à la formation →
-                </Link>
-              )}
-
-              {item.status !== "Validé" && (
-                <p className="mt-3 text-xs text-gray-500 italic">
-                  L’accès à la formation sera disponible une fois la validation
-                  effectuée.
+              {/* Message si en attente */}
+              {statut === 'En attente' && (
+                <p className="mt-3 text-xs text-blue-600 opacity-80 italic">
+                  Votre demande est en cours d'examen. Vous serez notifié dès qu'elle sera traitée.
                 </p>
               )}
             </div>
-          );
+          )
         })}
       </div>
     </div>
   );
 }
-
-

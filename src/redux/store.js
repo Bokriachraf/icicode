@@ -10,6 +10,10 @@ import {
 import {
   userUpdateReducer,
 } from './reducers/userReducers.js'
+import { niveauListReducer } from './reducers/niveauReducers';
+import { chapitreListReducer, chapitreDetailsReducer } from './reducers/chapitreReducers';
+import { seanceListReducer, seanceDetailsReducer, seanceJoinReducer } from './reducers/seanceReducers';
+
 export function makeStore(preloadedState = {}) {
   return configureStore({
     reducer: {
@@ -26,6 +30,12 @@ export function makeStore(preloadedState = {}) {
       userList: userListReducer,
       userDelete: userDeleteReducer,
       userUpdate: userUpdateReducer,
+      niveauList: niveauListReducer,
+      chapitreList: chapitreListReducer,
+      chapitreDetails: chapitreDetailsReducer,
+      seanceList: seanceListReducer,
+      seanceDetails: seanceDetailsReducer,
+      seanceJoin: seanceJoinReducer,
     },
     preloadedState,
   });

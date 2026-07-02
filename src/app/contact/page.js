@@ -19,19 +19,18 @@ export default function ContactPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Ici tu peux ajouter l'envoi réel (API, mail, etc.)
     setSubmitted(true);
   };
 
   return (
-    <div className="min-h-screen pt-24 pb-24 px-6 bg-gradient-to-br from-yellow-50 to-yellow-100 text-gray-800">
+    <div className="min-h-screen pt-24 pb-24 px-6">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         className="max-w-3xl mx-auto bg-white rounded-lg shadow-lg p-8"
       >
-        <h1 className="text-4xl font-bold mb-6 text-center">Contactez-nous</h1>
+        <h1 className="text-4xl font-bold mb-6 text-center text-gray-800">Contactez-nous</h1>
 
         {submitted ? (
           <div className="text-green-600 text-center font-semibold text-lg">
@@ -40,7 +39,7 @@ export default function ContactPage() {
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="name" className="block mb-1 font-medium">
+              <label htmlFor="name" className="block mb-1 font-medium text-gray-800">
                 Nom complet <span className="text-red-600">*</span>
               </label>
               <input
@@ -56,7 +55,7 @@ export default function ContactPage() {
             </div>
 
             <div>
-              <label htmlFor="email" className="block mb-1 font-medium">
+              <label htmlFor="email" className="block mb-1 font-medium text-gray-800">
                 Email <span className="text-red-600">*</span>
               </label>
               <input
@@ -72,7 +71,7 @@ export default function ContactPage() {
             </div>
 
             <div>
-              <label htmlFor="subject" className="block mb-1 font-medium">
+              <label htmlFor="subject" className="block mb-1 font-medium text-gray-800">
                 Sujet
               </label>
               <input
@@ -87,7 +86,7 @@ export default function ContactPage() {
             </div>
 
             <div>
-              <label htmlFor="message" className="block mb-1 font-medium">
+              <label htmlFor="message" className="block mb-1 font-medium text-gray-800">
                 Message <span className="text-red-600">*</span>
               </label>
               <textarea

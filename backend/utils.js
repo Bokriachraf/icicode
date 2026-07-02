@@ -75,3 +75,12 @@ export const isAuth = (req, res, next) => {
     res.status(403).json({ message: 'Accès refusé : administrateur uniquement' })
   }
 }
+
+// Middleware prof : isAdmin OU role === 'prof'
+export const isProf = (req, res, next) => {
+  if (req.user && (req.user.isAdmin || req.user.role === 'prof')) {
+    next()
+  } else {
+    res.status(403).json({ message: 'Accès refusé : professeur uniquement' })
+  }
+}

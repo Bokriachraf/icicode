@@ -1,129 +1,98 @@
 'use client'
 
 import Link from 'next/link'
-import React from 'react'
+import { usePathname } from 'next/navigation'
+import { useSelector } from 'react-redux'
 import {
-  Storefront,
-  Description,
+  Dashboard,
   People,
   AssignmentTurnedIn,
-  LocalShipping,
-  AttachMoney,
+  MenuBook,
+  VideoCall,
+  FitnessCenter,
   BarChart,
-  MailOutline,
-  PermIdentity,
-  ChatBubbleOutline,
-  DynamicFeed,
   Settings,
+  School,
+  AttachMoney,
 } from '@mui/icons-material'
 import './sidebar.css'
 
-function Sidebar() {
+const NavItem = ({ href, icon, label, active }) => (
+  <li className={`sidebarListItem ${active ? 'active' : ''}`}>
+    <Link href={href} className="link flex items-center gap-2">
+      <span className="sidebarIcon">{icon}</span>
+      {label}
+    </Link>
+  </li>
+)
+
+export default function Sidebar() {
+  const pathname = usePathname()
+  const { userInfo } = useSelector((state) => state.userSignin || {})
+
+  const isGeneralAdmin = userInfo?.isAdmin && userInfo?.role !== 'prof'
+  const isProf = userInfo?.role === 'prof' || userInfo?.isAdmin
+
+  const active = (path) => pathname === path || pathname.startsWith(path + '/')
+
   return (
     <div className="sidebar shadow-xl bg-black/60 backdrop-blur-md">
       <div className="sidebarwrapper">
-        {/* Dashboard */}
+
+        {/* ── Section commune ── */}
         <div className="sidebarMenu">
           <h3 className="sidebarTitle">Tableau de bord</h3>
           <ul className="sidebarList">
-            <li className="sidebarListItem">
-              <Link href="/admin" className="link">
-                <AssignmentTurnedIn className="sidebarIcon" />
-                Accueil
-              </Link>
-            </li>
-            <li className="sidebarListItem">
-              <BarChart className="sidebarIcon" />
-              Vue globale
-            </li>
+            <NavItem href="/admin" icon={<Dashboard />} label="Accueil" active={pathname === '/admin'} />
+            {isGeneralAdmin && (
+              <NavItem href="/admin/stats" icon={<BarChart />} label="Statistiques" active={active('/admin/stats')} />
+            )}
           </ul>
         </div>
 
-        {/* Dossiers */}
-        <div className="sidebarMenu">
-          <h3 className="sidebarTitle">Dossiers</h3>
-          <ul className="sidebarList">
-            <li className="sidebarListItem">
-              <Link href="/admin/inscription" className="link">
-                <Storefront className="sidebarIcon" />
-                Inscriptions 
-              </Link>
-            </li>
-            <li className="sidebarListItem">
-              <Description className="sidebarIcon" />
-              Documents 
-            </li>
-            <li className="sidebarListItem">
-              <AssignmentTurnedIn className="sidebarIcon" />
-              Dossiers étudiants
-            </li>
-          </ul>
-        </div>
+        {/* ── Admin Général uniquement ── */}
+        {isGeneralAdmin && (
+          <>
+            <div className="sidebarMenu">
+              <h3 className="sidebarTitle">Gestion</h3>
+              <ul className="sidebarList">
+                <NavItem href="/admin/inscription" icon={<AssignmentTurnedIn />} label="Inscriptions" active={active('/admin/inscription')} />
+                <NavItem href="/admin/users" icon={<People />} label="Utilisateurs" active={active('/admin/users')} />
+                <NavItem href="/admin/niveaux" icon={<School />} label="Niveaux" active={active('/admin/niveaux')} />
+              </ul>
+            </div>
 
-        {/* Logistique */}
-        <div className="sidebarMenu">
-          <h3 className="sidebarTitle">Programme</h3>
-          <ul className="sidebarList">
-            <li className="sidebarListItem">
-              <LocalShipping className="sidebarIcon" />
-              Formation continue
-            </li>
-            <li className="sidebarListItem">
-              <AssignmentTurnedIn className="sidebarIcon" />
-              Projet fin d'etudes
-            </li>
-          </ul>
-        </div>
+            <div className="sidebarMenu">
+              <h3 className="sidebarTitle">Facturation</h3>
+              <ul className="sidebarList">
+                <NavItem href="/admin/paiements" icon={<AttachMoney />} label="Paiements" active={active('/admin/paiements')} />
+              </ul>
+            </div>
+          </>
+        )}
 
-        {/* Facturation */}
-        <div className="sidebarMenu">
-          <h3 className="sidebarTitle">Facturation</h3>
-          <ul className="sidebarList">
-            <li className="sidebarListItem">
-              <AttachMoney className="sidebarIcon" />
-             Formations
-            </li>
-            <li className="sidebarListItem">
-              <BarChart className="sidebarIcon" />
-              Paiements & taxes
-            </li>
-          </ul>
-        </div>
+        {/* ── Prof + Admin ── */}
+        {isProf && (
+          <div className="sidebarMenu">
+            <h3 className="sidebarTitle">Contenu</h3>
+            <ul className="sidebarList">
+              <NavItem href="/admin/chapitres" icon={<MenuBook />} label="Chapitres" active={active('/admin/chapitres')} />
+              <NavItem href="/admin/seances" icon={<VideoCall />} label="Séances" active={active('/admin/seances')} />
+              <NavItem href="/admin/exercices" icon={<FitnessCenter />} label="Exercices" active={active('/admin/exercices')} />
+            </ul>
+          </div>
+        )}
 
-        {/* Utilisateurs */}
-        <div className="sidebarMenu">
-          <h3 className="sidebarTitle">Etudiants</h3>
-          <ul className="sidebarList">
-           <li className="sidebarListItem">
-            <Link href="/courses" className="link">
-                <AttachMoney className="sidebarIcon" />
-             Cours
-              </Link>
-             
-            </li>
-          </ul>
-        </div>
+        {isProf && (
+          <div className="sidebarMenu">
+            <h3 className="sidebarTitle">Suivi</h3>
+            <ul className="sidebarList">
+              <NavItem href="/admin/progression" icon={<BarChart />} label="Progressions" active={active('/admin/progression')} />
+            </ul>
+          </div>
+        )}
 
-        {/* Notifications */}
-        <div className="sidebarMenu">
-          <h3 className="sidebarTitle">Notifications</h3>
-          <ul className="sidebarList">
-            <li className="sidebarListItem">
-              <MailOutline className="sidebarIcon" />
-              Emails
-            </li>
-            <li className="sidebarListItem">
-              <DynamicFeed className="sidebarIcon" />
-              Avis
-            </li>
-            <li className="sidebarListItem">
-              <ChatBubbleOutline className="sidebarIcon" />
-              Messages
-            </li>
-          </ul>
-        </div>
-
-        {/* Paramètres */}
+        {/* ── Paramètres ── */}
         <div className="sidebarMenu">
           <h3 className="sidebarTitle">Paramètres</h3>
           <ul className="sidebarList">
@@ -133,9 +102,8 @@ function Sidebar() {
             </li>
           </ul>
         </div>
+
       </div>
     </div>
   )
 }
-
-export default Sidebar

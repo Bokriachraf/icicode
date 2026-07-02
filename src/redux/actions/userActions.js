@@ -19,15 +19,17 @@ import {
 } from '../constants/userConstants';
 
 const API = process.env.NEXT_PUBLIC_API_URL;
+const SSO = process.env.NEXT_PUBLIC_SSO_URL;
 
 // --- REGISTER ---
-export const register = (name, email, password, router) => async (dispatch) => {
+export const register = (name, email, password, router, niveauId) => async (dispatch) => {
   dispatch({ type: USER_REGISTER_REQUEST, payload: { email, password } });
   try {
-    const { data } = await Axios.post(`${API}/api/users/register`, {
+    const { data } = await Axios.post(`${SSO}/api/auth/register`, {
       name,
       email,
       password,
+      niveauId: niveauId || null,
     });
 
     dispatch({ type: USER_REGISTER_SUCCESS, payload: data });
@@ -54,7 +56,7 @@ export const register = (name, email, password, router) => async (dispatch) => {
 export const signin = (email, password, router) => async (dispatch) => {
   dispatch({ type: USER_SIGNIN_REQUEST, payload: { email, password } });
   try {
-    const { data } = await Axios.post(`${API}/api/users/signin`, {
+    const { data } = await Axios.post(`${SSO}/api/auth/signin`, {
       email,
       password,
     });

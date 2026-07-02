@@ -106,7 +106,7 @@ export default function CodalogLogo({ size = 380, showWordmark = true }) {
   }, [])
 
   return (
-    <div style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+    <div style={{ marginTop : "12px", display: 'inline-flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
       <svg viewBox="-215 -215 430 430" width={size} height={size}
            xmlns="http://www.w3.org/2000/svg" style={{ overflow: 'visible' }}>
         <defs>
@@ -218,20 +218,27 @@ export default function CodalogLogo({ size = 380, showWordmark = true }) {
           strokeWidth="2" filter="url(#lfC)" opacity="0.98"/>
         <circle cx="0" cy="0" r="63" fill="none" stroke="#00FFD1" strokeWidth="0.6" opacity="0.13"/>
         <ellipse cx="-14" cy="-20" rx="17" ry="9" fill="white" opacity="0.04" transform="rotate(-30)"/>
+         
+          {/* Séparateur + Mathématique */}
+        <line x1="-32" y1="-22" x2="32" y2="-22" stroke="#00FFD1" strokeWidth="0.6" opacity="0.3"/>
+        <text x="0" y="-34" textAnchor="middle" dominantBaseline="hanging"
+          fill="#6ECFB0" fontSize="8.5"
+          fontFamily="'JetBrains Mono','Courier New',monospace"
+          fontWeight="400" letterSpacing="1.5" opacity="0.82">Programmation</text>
 
         {/* < ∞ > */}
-        <text x="-26" y="-10" textAnchor="middle" dominantBaseline="central"
+        <text x="-26" y="-2" textAnchor="middle" dominantBaseline="central"
           fill="url(#lgC)" fontSize="28"
           fontFamily="'JetBrains Mono','Courier New',monospace"
           fontWeight="700" filter="url(#lfC)">&lt;</text>
-        <text x="0" y="-8" textAnchor="middle" dominantBaseline="central"
+        <text x="0" y="-4" textAnchor="middle" dominantBaseline="central"
           fill="url(#lgG)" fontSize="26"
           fontFamily="Georgia,'Times New Roman',serif"
           fontWeight="400" filter="url(#lfG)">
           ∞
           <animate attributeName="opacity" values="1;0.35;1" dur="3s" repeatCount="indefinite"/>
         </text>
-        <text x="26" y="-10" textAnchor="middle" dominantBaseline="central"
+        <text x="26" y="-2" textAnchor="middle" dominantBaseline="central"
           fill="url(#lgC)" fontSize="28"
           fontFamily="'JetBrains Mono','Courier New',monospace"
           fontWeight="700" filter="url(#lfC)">&gt;</text>
@@ -245,7 +252,7 @@ export default function CodalogLogo({ size = 380, showWordmark = true }) {
       </svg>
 
       {showWordmark && (
-        <div style={{ marginLeft: '150px' , display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+        <div style={{ marginTop: '-30px', marginLeft: '200px' , display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
           {/* C O D @ L O G — blanc sauf O et @ en bleu */}
           <div style={{ display: 'flex', alignItems: 'baseline', letterSpacing: '-1px' }}>
             {[
@@ -267,16 +274,16 @@ export default function CodalogLogo({ size = 380, showWordmark = true }) {
             ))}
           </div>
           <div style={{
-            fontSize: '0.54rem',
+            fontSize: '0.47rem',
             letterSpacing: '0.3em',
             textTransform: 'uppercase',
             color: 'rgba(100,160,220,0.55)',
           }}>
-            Code{' '}
-            <span style={{ color: 'rgba(0,255,209,0.45)', margin: '0 0.3rem' }}>·</span>
+            Assurer votre avenir
+            {/* <span style={{ color: 'rgba(0,255,209,0.45)', margin: '0 0.3rem' }}>·</span>
             Math{' '}
             <span style={{ color: 'rgba(0,255,209,0.45)', margin: '0 0.3rem' }}>·</span>
-            Intelligence
+            Intelligence */}
           </div>
         </div>
       )}

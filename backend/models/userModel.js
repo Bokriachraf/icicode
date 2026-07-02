@@ -19,7 +19,12 @@ const userSchema = new mongoose.Schema(
         score: { type: Number, default: 0 }, // ex: quiz, exercices
       },
     ],
-    role: { type: String, enum: ['etudiant', 'admin'], default: 'etudiant' },
+    role: { type: String, enum: ['etudiant', 'admin', 'prof'], default: 'etudiant' },
+    niveauId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Niveau',
+      default: null,
+    },
   },
   {
     timestamps: true,

@@ -2,24 +2,122 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================================
+   CODALOG — Design System
+   Palette extraite du CodalogLogo (hexagone, nœuds, fond)
+   ============================================================ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Fond global */
+  --background: #000D1A;
+  --foreground: #E8F4FF;
+
+  /* Palette brand */
+  --brand-deep:  #000D1A;
+  --brand-dark:  #001830;
+  --brand-mid:   #002966;
+  --brand-blue:  #4A90E2;
+  --brand-gold:  #FFD700;
+  --brand-cyan:  #00FFD1;
+  --brand-white: #E8F4FF;
+
+  /* Surfaces glassmorphism */
+  --surface-card:    rgba(255, 255, 255, 0.04);
+  --surface-card-hv: rgba(255, 255, 255, 0.07);
+  --border-card:     rgba(0, 255, 209, 0.15);
+  --border-card-hv:  rgba(0, 255, 209, 0.35);
+
+  /* Texte */
+  --text-primary:   #E8F4FF;
+  --text-secondary: rgba(168, 200, 230, 0.75);
+  --text-muted:     rgba(100, 150, 190, 0.55);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/* suppression du dark media : on est toujours en mode sombre */
 
+/* ---- Reset body ---- */
 body {
   color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--brand-deep);
+  font-family: 'JetBrains Mono', 'Courier New', Arial, sans-serif;
+  min-height: 100vh;
 }
 
+/* ---- Utilitaires Codalog (utilisables en className) ---- */
+.brand-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-card);
+  border-radius: 12px;
+  backdrop-filter: blur(6px);
+  transition: background 0.25s, border-color 0.25s;
+}
+.brand-card:hover {
+  background: var(--surface-card-hv);
+  border-color: var(--border-card-hv);
+}
+
+.brand-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid rgba(74, 144, 226, 0.5);
+  background: rgba(74, 144, 226, 0.15);
+  color: #4A90E2;
+}
+.brand-btn:hover {
+  background: rgba(74, 144, 226, 0.28);
+  border-color: rgba(74, 144, 226, 0.8);
+  color: #7BBAFF;
+}
+
+.brand-btn-gold {
+  border-color: rgba(255, 215, 0, 0.45);
+  background: rgba(255, 215, 0, 0.12);
+  color: #FFD700;
+}
+.brand-btn-gold:hover {
+  background: rgba(255, 215, 0, 0.22);
+  border-color: rgba(255, 215, 0, 0.7);
+}
+
+.brand-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+}
+.brand-badge-cyan {
+  background: rgba(0, 255, 209, 0.1);
+  border: 1px solid rgba(0, 255, 209, 0.3);
+  color: #00FFD1;
+}
+.brand-badge-gold {
+  background: rgba(255, 215, 0, 0.1);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  color: #FFD700;
+}
+.brand-badge-blue {
+  background: rgba(74, 144, 226, 0.12);
+  border: 1px solid rgba(74, 144, 226, 0.35);
+  color: #4A90E2;
+}
+
+.brand-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 255, 209, 0.3), transparent);
+  border: none;
+  margin: 2rem 0;
+}
+
+/* ---- Héritage des classes legacy (forms, dropdown) ---- */
 .form {
   max-width: 60rem;
   margin: 0 auto;
@@ -32,6 +130,7 @@ body {
 .form label {
   margin: 1rem 0;
   display: block;
+  color: var(--text-secondary);
 }
 .dropdown {
   display: inline-block;
@@ -44,7 +143,8 @@ body {
   min-width: 12rem;
   padding: 1rem;
   z-index: 1;
-  background-color: #203040;
+  background-color: var(--brand-dark);
+  border: 1px solid var(--border-card);
   margin: 0;
   margin-top: 0.4rem;
   border-radius: 0.5rem;
@@ -55,10 +155,39 @@ body {
 .home {
   flex: 4;
   padding-top: 30px;
-  background-color: white;
 }
-
 .homeWidgets {
   display: flex;
   margin: 20px;
+}
+
+/* ---- Fix inputs sur fond blanc (formulaires inscription, register, signin) ---- */
+.form-light input,
+.form-light select,
+.form-light textarea {
+  color: #111827 !important;
+  background-color: #ffffff !important;
+}
+
+/* Ciblage global des pages bg-white ou bg-gray */
+.bg-white input,
+.bg-white select,
+.bg-white textarea,
+.bg-gray-100 input,
+.bg-gray-100 select,
+.bg-gray-50 input,
+.bg-gray-50 select {
+  color: #111827 !important;
+  background-color: #ffffff !important;
+}
+
+/* Fix spécifique formulaire Step inscription (bg-white p-5) */
+form.space-y-6 input,
+form.space-y-6 select,
+form.space-y-6 textarea,
+form.space-y-4 input,
+form.space-y-4 select,
+form.space-y-5 input,
+form.space-y-5 select {
+  color: #111827 !important;
 }

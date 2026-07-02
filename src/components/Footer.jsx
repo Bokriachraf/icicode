@@ -1,85 +1,62 @@
-'use client';
-import { FaFacebookF, FaLinkedinIn } from 'react-icons/fa';
+'use client'
+import { FaFacebookF, FaLinkedinIn } from 'react-icons/fa'
 
 export default function Footer() {
   return (
-    <footer className="fixed bottom-0 left-0 right-0 z-20 bg-black/70 text-white py-2 sm:py-4 px-4 sm:px-6 backdrop-blur-sm shadow-inner">
-      <div className="max-w-2xl mx-auto flex flex-col sm:flex-row justify-between items-center text-xs sm:text-sm gap-1 sm:gap-3">
-        <p className="text-center sm:text-left">
+    <footer
+      style={{
+        /* En flux normal (pas fixed) — s'affiche sous le contenu */
+        position: 'relative',
+        zIndex: 10,
+        background: 'rgba(0, 13, 26, 0.85)',
+        borderTop: '1px solid rgba(0, 255, 209, 0.1)',
+        backdropFilter: 'blur(8px)',
+        WebkitBackdropFilter: 'blur(8px)',
+        padding: '14px 24px',
+      }}
+    >
+      <div
+        style={{
+          maxWidth: '720px',
+          margin: '0 auto',
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          gap: '8px',
+        }}
+      >
+        <p style={{ fontSize: '0.75rem', color: 'rgba(168, 200, 230, 0.6)', margin: 0 }}>
           &copy; {new Date().getFullYear()}{' '}
-          <span className="font-semibold text-white">IciCode</span>. Tous droits réservés.
+          <span style={{ fontWeight: 700, color: '#E8F4FF' }}>Codalog</span>
+          {' '}— Tous droits réservés.
         </p>
 
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
           <a
             href="https://www.facebook.com/tonprofil"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-blue-400 transition"
             aria-label="Facebook"
+            style={{ color: 'rgba(168, 200, 230, 0.5)', transition: 'color 0.2s' }}
+            onMouseEnter={e => (e.currentTarget.style.color = '#4A90E2')}
+            onMouseLeave={e => (e.currentTarget.style.color = 'rgba(168, 200, 230, 0.5)')}
           >
-            <FaFacebookF size={16} />
+            <FaFacebookF size={15} />
           </a>
           <a
             href="https://www.linkedin.com/in/tonprofil"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-blue-300 transition"
             aria-label="LinkedIn"
+            style={{ color: 'rgba(168, 200, 230, 0.5)', transition: 'color 0.2s' }}
+            onMouseEnter={e => (e.currentTarget.style.color = '#00FFD1')}
+            onMouseLeave={e => (e.currentTarget.style.color = 'rgba(168, 200, 230, 0.5)')}
           >
-            <FaLinkedinIn size={16} />
+            <FaLinkedinIn size={15} />
           </a>
         </div>
       </div>
     </footer>
-  );
+  )
 }
-
-
-
-// import { FaFacebookF, FaLinkedinIn } from 'react-icons/fa'
-
-// export default function Footer() {
-//   return (
-//     <footer className="fixed bottom-0 left-0 right-0 z-20 bg-black/70 text-white  py-4 px-6 backdrop-blur-sm shadow-inner">
-//       <div className="max-w-2xl mx-auto px-20 flex flex-col sm:flex-row justify-between items-center text-sm gap-2">
-//         <p>
-//           &copy; {new Date().getFullYear()}{' '}
-//           <span className="font-semibold text-white">DouaNet Transit</span>. Tous droits réservés.
-//         </p>
-
-//         <div className="flex items-center gap-1 px-14" >
-//           <a
-//             href="https://www.facebook.com/tonprofil"
-//             target="_blank"
-//             rel="noopener noreferrer"
-//             className="hover:text-blue-400 transition"
-//             aria-label="Facebook"
-//           >
-//             <FaFacebookF size={18} />
-//           </a>
-//           <a
-//             href="https://www.linkedin.com/in/tonprofil"
-//             target="_blank"
-//             rel="noopener noreferrer"
-//             className="hover:text-blue-300 transition"
-//             aria-label="LinkedIn"
-//           >
-//             <FaLinkedinIn size={18} />
-//           </a>
-//         </div>
-//       </div>
-//     </footer>
-//   )
-// }
-
-
-// // export default function Footer() {
-// //   return (
-// //     <footer className="fixed bottom-0 left-0 right-0 z-20 bg-black bg-opacity-60 text-white py-4 px-8 shadow-inner backdrop-blur-md">
-// //       <div className="max-w-7xl mx-auto text-center">
-// //         <p className="text-sm">&copy; {new Date().getFullYear()} DouaNet Transit. Tous droits réservés.</p>
-// //       </div>
-// //     </footer>
-// //   )
-// // }

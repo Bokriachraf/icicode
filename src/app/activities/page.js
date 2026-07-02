@@ -27,13 +27,14 @@ const activites = [
 
 export default function ActivitesPage() {
   return (
-    <div className="min-h-screen pt-24 pb-24 px-6 bg-gradient-to-br from-blue-50 to-blue-100 text-gray-800">
+    <div className="min-h-screen pt-24 pb-24 px-6" style={{ color: 'var(--text-primary)' }}>
       <div className="max-w-5xl mx-auto space-y-12">
         <motion.h1
           initial={{ y: -30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.6 }}
           className="text-4xl font-bold text-center"
+          style={{ color: 'var(--brand-white)' }}
         >
           Nos Activités
         </motion.h1>
@@ -45,22 +46,19 @@ export default function ActivitesPage() {
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.2 }}
-              className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl hover:scale-105 transition-transform duration-300 ease-in-out text-center flex flex-col items-center"
+              className="brand-card p-6 hover:scale-105 transition-transform duration-300 ease-in-out text-center flex flex-col items-center"
             >
-              <div className="text-yellow-500 mb-4 w-20 h-20 flex items-center justify-center text-5xl">
+              <div className="mb-4 w-20 h-20 flex items-center justify-center text-5xl" style={{ color: 'var(--brand-gold)' }}>
                 <Icon />
               </div>
-              <h3 className="text-xl font-semibold mb-2">{title}</h3>
-              <p className="text-sm">{description}</p>
+              <h3 className="text-xl font-semibold mb-2" style={{ color: 'var(--brand-white)' }}>{title}</h3>
+              <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>{description}</p>
             </motion.div>
           ))}
         </div>
 
         <div className="text-center mt-8">
-          <Link
-            href="/contact"
-            className="bg-yellow-500 text-black font-semibold py-3 px-6 rounded hover:bg-yellow-600 transition duration-300"
-          >
+          <Link href="/contact" className="brand-btn-gold brand-btn">
             Nous contacter
           </Link>
         </div>
@@ -68,4 +66,3 @@ export default function ActivitesPage() {
     </div>
   );
 }
-

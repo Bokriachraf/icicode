@@ -6,7 +6,7 @@ import Link from "next/link";
 export default function CourseDetailPage() {
   const { id } = useParams();
   const searchParams = useSearchParams();
-  const formation = searchParams.get("formation"); // 🎯 Récupère la formation depuis l’URL
+  const formation = searchParams.get("formation");
 
   const [course, setCourse] = useState(null);
   const [error, setError] = useState(null);
@@ -31,71 +31,38 @@ export default function CourseDetailPage() {
     fetchCourse();
   }, [id]);
 
-  if (loading) return <p>Chargement...</p>;
-  if (error) return <p className="text-red-500">{error}</p>;
-  if (!course) return <p>Aucun cours trouvé.</p>;
+  if (loading) return <p className="min-h-screen pt-24 text-center" style={{ color: 'var(--text-secondary)' }}>Chargement...</p>;
+  if (error) return <p className="min-h-screen pt-24 text-center text-red-400">{error}</p>;
+  if (!course) return <p className="min-h-screen pt-24 text-center" style={{ color: 'var(--text-secondary)' }}>Aucun cours trouvé.</p>;
 
   return (
-    <div className="py-24 max-w-2xl mx-auto p-6 bg-white shadow-md rounded-xl">
-      <h1 className="text-2xl font-bold mb-4">{course.title}</h1>
-      <p><strong>Matière :</strong> {course.subject}</p>
-      <p><strong>Niveau :</strong> {course.level}</p>
-      <p><strong>Chapitre :</strong> {course.chapter}</p>
+    <div className="py-24 max-w-2xl mx-auto p-6 min-h-screen">
+      <div className="brand-card p-6">
+        <h1 className="text-2xl font-bold mb-4" style={{ color: 'var(--brand-white)' }}>{course.title}</h1>
+        <p style={{ color: 'var(--text-secondary)' }}><strong style={{ color: 'var(--brand-white)' }}>Matière :</strong> {course.subject}</p>
+        <p style={{ color: 'var(--text-secondary)' }}><strong style={{ color: 'var(--brand-white)' }}>Niveau :</strong> {course.level}</p>
+        <p style={{ color: 'var(--text-secondary)' }}><strong style={{ color: 'var(--brand-white)' }}>Chapitre :</strong> {course.chapter}</p>
 
-      {course.description && (
-        <p className="mt-2 text-gray-700 italic">{course.description}</p>
-      )}
+        {course.description && (
+          <p className="mt-2 italic" style={{ color: 'var(--text-secondary)' }}>{course.description}</p>
+        )}
 
-      <div className="mt-4 p-4 border rounded bg-gray-50 whitespace-pre-line">
-        {course.content}
+        <div className="mt-4 p-4 border rounded whitespace-pre-line" style={{ borderColor: 'var(--border-card)', background: 'rgba(255,255,255,0.03)', color: 'var(--text-secondary)' }}>
+          {course.content}
+        </div>
+
+        <Link
+          href={
+            formation
+              ? `/dashboard?formation=${encodeURIComponent(formation)}`
+              : `/dashboard`
+          }
+          className="inline-block mt-6 font-semibold hover:underline"
+          style={{ color: 'var(--brand-cyan)' }}
+        >
+          ← Retour à {formation ? `la formation ${formation}` : "mon tableau de bord"}
+        </Link>
       </div>
-
-      {/* 🧭 Retour dynamique vers le bon tableau de bord */}
-      <Link
-        href={
-          formation
-            ? `/dashboard?formation=${encodeURIComponent(formation)}`
-            : `/dashboard`
-        }
-        className="inline-block mt-6 text-blue-600 font-semibold hover:underline"
-      >
-        ← Retour à {formation ? `la formation ${formation}` : "mon tableau de bord"}
-      </Link>
     </div>
   );
 }
-
-
-
-// "use client";
-// import { useParams } from "next/navigation";
-// import { useEffect, useState } from "react";
-
-// export default function CourseDetailPage() {
-//   const { id } = useParams();
-//   const [course, setCourse] = useState(null);
-
-//   useEffect(() => {
-//     fetch(`http://localhost:5000/api/courses/${id}`)
-//       .then((res) => res.json())
-//       .then((data) => setCourse(data));
-//   }, [id]);
-
-//   if (!course) return <p>Chargement...</p>;
-
-//   return (
-//     <div className="p-6">
-//       <h1 className="text-2xl font-bold mb-4">{course.title}</h1>
-//       <p><strong>Niveau :</strong> {course.level}</p>
-//       <p><strong>Chapitre :</strong> {course.chapter}</p>
-//       <div className="mt-4">{course.content}</div>
-
-//       <a
-//         href="/courses"
-//         className="inline-block mt-6 text-blue-600 hover:underline"
-//       >
-//         ← Retour à la liste
-//       </a>
-//     </div>
-//   );
-// }
