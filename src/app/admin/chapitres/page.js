@@ -28,9 +28,15 @@ export default function AdminChapitresPage() {
   }, [niveauId])
 
   const fetchNiveaux = async () => {
-    const { data } = await Axios.get(`${API}/api/niveaux`)
-    setNiveaux(data)
-    if (data.length > 0) setNiveauId(data[0]._id)
+    try {
+      const { data } = await Axios.get(`${API}/api/niveaux`)
+      const list = Array.isArray(data) ? data : []
+      setNiveaux(list)
+      if (list.length > 0) setNiveauId(list[0]._id)
+    } catch (e) {
+      console.error(e)
+      setNiveaux([])
+    }
   }
 
   const fetchChapitres = async (id) => {
@@ -39,8 +45,11 @@ export default function AdminChapitresPage() {
       const { data } = await Axios.get(`${API}/api/chapitres?niveauId=${id}`, {
         headers: { Authorization: `Bearer ${userInfo.token}` },
       })
-      setChapitres(data)
-    } catch (e) { console.error(e) }
+      setChapitres(Array.isArray(data) ? data : [])
+    } catch (e) {
+      console.error(e)
+      setChapitres([])
+    }
     setLoading(false)
   }
 

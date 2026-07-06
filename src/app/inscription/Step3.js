@@ -77,7 +77,15 @@ export default function Step3({ onPrevious }) {
 
     try {
       await dispatch(submitInscription(finalData))
-      await dispatch(completeInscription())
+      await dispatch(completeInscription({
+        nom:               form.nom,
+        prenom:            form.prenom,
+        email:             form.email,
+        tel:               form.tel,
+        niveauId:          niveauId,
+        sourceDecouverte:  form.sourceDecouverte,
+        newsletterConsent: form.newsletterConsent,
+      }))
       router.push('/inscription/suivi')
     } catch (err) {
       setMessage('❌ Une erreur est survenue lors de la soumission.')

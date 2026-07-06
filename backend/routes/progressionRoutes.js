@@ -2,7 +2,7 @@ import express from 'express';
 import expressAsyncHandler from 'express-async-handler';
 import Progression from '../models/progressionModel.js';
 import Chapitre from '../models/chapitreModel.js';
-import { isAuth, isAdmin } from '../utils.js';
+import { isAuth, isAdmin, isProf } from '../utils.js';
 
 const progressionRouter = express.Router();
 
@@ -111,7 +111,7 @@ progressionRouter.post(
 progressionRouter.put(
   '/valider-prof',
   isAuth,
-  isAdmin,
+  isProf,
   expressAsyncHandler(async (req, res) => {
     const { userId, chapitreId, exerciceId, score, commentaire } = req.body;
 
@@ -140,7 +140,7 @@ progressionRouter.put(
 progressionRouter.get(
   '/admin/tous',
   isAuth,
-  isAdmin,
+  isProf,
   expressAsyncHandler(async (req, res) => {
     const filter = {};
     if (req.query.chapitreId) filter.chapitreId = req.query.chapitreId;

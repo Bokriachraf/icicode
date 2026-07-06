@@ -21,11 +21,19 @@ export default function ChapitrePage() {
   const [output, setOutput] = useState('');
   const [running, setRunning] = useState(false);
   const [pyodideReady, setPyodideReady] = useState(false);
+  const [exercicesAffectes, setExercicesAffectes] = useState([]);
+  const [exSelectionne, setExSelectionne] = useState(null);
+  const [reponseSoumise, setReponseSoumise] = useState('');
   const pyodideRef = useRef(null);
 
   useEffect(() => {
     if (!userInfo) { router.push('/signin'); return; }
     dispatch(getChapitreDetails(id));
+    // Charger les exercices affectés à cet élève pour ce chapitre
+    const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
+    Axios.get(`${API}/api/affectations/eleve/${id}`, config)
+      .then(r => setExercicesAffectes(r.data))
+      .catch(() => {});
   }, [dispatch, id, userInfo]);
 
   useEffect(() => {
@@ -202,13 +210,55 @@ sys.stdout = StringIO()
 
             {/* Bouton terminer Math */}
             <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={terminerMath}
-              className="w-full md:w-auto bg-purple-600 hover:bg-purple-700 text-white font-semibold px-8 py-3 rounded-xl transition"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={terminerMath}
+            className="w-full md:w-auto bg-purple-600 hover:bg-purple-700 text-white font-semibold px-8 py-3 rounded-xl transition"
             >
-              ✅ J'ai compris — Passer à Python →
+            ✅ J'ai compris — Passer à Python →
             </motion.button>
+
+              {/* Exercices Math affectés */}
+              {exercicesAffectes.filter(a => a.exerciceId?.type_partie === 'math').length > 0 && (
+                <div className="mt-6">
+                  <h3 className="font-semibold text-gray-800 mb-3">📝 Exercices</h3>
+                  <div className="flex flex-col gap-3">
+                    {exercicesAffectes
+                      .filter(a => a.exerciceId?.type_partie === 'math')
+                      .map(a => (
+                        <div key={a._id} className="bg-purple-50 border border-purple-200 rounded-xl p-4">
+                          <p className="text-sm font-medium text-gray-800 mb-2">{a.exerciceId.enonce}</p>
+                          {a.exerciceId.type === 'qcm' && (
+                            <div className="flex flex-col gap-2">
+                              {a.exerciceId.options?.map((opt, i) => (
+                                <button key={i}
+                                  onClick={() => setReponseSoumise(opt)}
+                                  className={`text-left text-sm px-4 py-2 rounded-lg border-2 transition
+                                    ${reponseSoumise === opt ? 'border-purple-500 bg-purple-100 text-purple-800' : 'border-gray-200 hover:border-purple-300'}`}>
+                                  {opt}
+                                </button>
+                              ))}
+                              <button
+                                onClick={() => {
+                                  const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
+                                  const correct = reponseSoumise === a.exerciceId.reponseAttendue;
+                                  Axios.post(`${API}/api/progression/soumettre`, {
+                                    chapitreId: id, exerciceId: a.exerciceId._id,
+                                    reponse: reponseSoumise, validation: 'auto',
+                                    score: correct ? a.exerciceId.scoreMax : 0,
+                                  }, config);
+                                  alert(correct ? '✅ Bonne réponse !' : `❌ Mauvaise réponse. Réponse correcte : ${a.exerciceId.reponseAttendue}`);
+                                }}
+                                className="self-start mt-1 bg-purple-600 text-white text-xs px-4 py-2 rounded-lg font-semibold">
+                                Valider
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              )}
           </motion.div>
         )}
 
@@ -270,6 +320,59 @@ sys.stdout = StringIO()
                 </div>
               )}
             </div>
+
+            {/* Exercices Python affectés */}
+            {exercicesAffectes.filter(a => a.exerciceId?.type_partie === 'python').length > 0 && (
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+                <h3 className="font-semibold text-gray-800 mb-4">📝 Exercices Python</h3>
+                <div className="flex flex-col gap-4">
+                  {exercicesAffectes
+                    .filter(a => a.exerciceId?.type_partie === 'python')
+                    .map(a => (
+                      <div key={a._id} className="bg-green-50 border border-green-200 rounded-xl p-4">
+                        <p className="text-sm font-medium text-gray-800 mb-2">{a.exerciceId.enonce}</p>
+                        {a.exerciceId.type === 'projet_libre' && (
+                          <div className="space-y-2">
+                            {a.exerciceId.codeStarter && (
+                              <button onClick={() => setCode(a.exerciceId.codeStarter)}
+                                className="text-xs text-green-700 hover:underline">
+                                → Charger le code de départ dans l'éditeur
+                              </button>
+                            )}
+                            <button
+                              onClick={() => {
+                                const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
+                                Axios.post(`${API}/api/progression/soumettre`, {
+                                  chapitreId: id, exerciceId: a.exerciceId._id,
+                                  reponse: code, validation: 'prof', score: 0,
+                                }, config).then(() => alert('✅ Code soumis au professeur pour correction !'));
+                              }}
+                              className="block bg-green-600 text-white text-xs px-4 py-2 rounded-lg font-semibold">
+                              📤 Soumettre mon code au prof
+                            </button>
+                          </div>
+                        )}
+                        {a.exerciceId.type === 'completion' && (
+                          <div className="space-y-2">
+                            {a.exerciceId.codeStarter && (
+                              <button onClick={() => setCode(a.exerciceId.codeStarter)}
+                                className="text-xs text-green-700 hover:underline">
+                                → Charger le code dans l'éditeur
+                              </button>
+                            )}
+                            <p className="text-xs text-gray-500">Complète le code dans l'éditeur puis exécute-le.</p>
+                          </div>
+                        )}
+                        {a.dateEcheance && (
+                          <p className="text-xs text-gray-400 mt-2">
+                            ⏰ Échéance : {new Date(a.dateEcheance).toLocaleDateString('fr-FR')}
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                </div>
+              </div>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

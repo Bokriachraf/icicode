@@ -21,10 +21,10 @@ export default function EditChapitrePage() {
   useEffect(() => {
     if (!userInfo?.isAdmin && userInfo?.role !== 'prof') { router.push('/'); return }
     Promise.all([
-      Axios.get(`${API}/api/niveaux`),
+      Axios.get(`${API}/api/niveaux`).catch(() => ({ data: [] })),
       Axios.get(`${API}/api/chapitres/${id}`, { headers: { Authorization: `Bearer ${userInfo.token}` } }),
     ]).then(([nRes, cRes]) => {
-      setNiveaux(nRes.data)
+      setNiveaux(Array.isArray(nRes.data) ? nRes.data : [])
       const c = cRes.data
       setForm({
         niveauId: c.niveauId?._id || c.niveauId || '',

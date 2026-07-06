@@ -13,6 +13,11 @@ import exerciceRouter from './routes/exerciceRoutes.js'
 import seanceRouter from './routes/seanceRoutes.js'
 import progressionRouter from './routes/progressionRoutes.js'
 import userAdminRouter from './routes/userAdminRoutes.js'
+import groupeRouter from './routes/groupeRoutes.js'
+import affectationRouter from './routes/affectationRoutes.js'
+import planRouter from './routes/planRoutes.js'
+import abonnementRouter from './routes/abonnementRoutes.js'
+import paiementRouter from './routes/paiementRoutes.js'
 
 dotenv.config()
 connectDB()
@@ -32,6 +37,11 @@ app.use('/api/exercices', exerciceRouter)
 app.use('/api/seances', seanceRouter)
 app.use('/api/progression', progressionRouter)
 app.use('/api/admin/users', userAdminRouter)
+app.use('/api/groupes', groupeRouter)
+app.use('/api/affectations', affectationRouter)
+app.use('/api/plans', planRouter)
+app.use('/api/abonnements', abonnementRouter)
+app.use('/api/paiements', paiementRouter)
 
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))

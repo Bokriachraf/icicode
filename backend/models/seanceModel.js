@@ -5,11 +5,15 @@ const seanceSchema = new mongoose.Schema(
     chapitreId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Chapitre',
-      required: true,
     },
     niveauId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Niveau',
+      required: true,
+    },
+    groupeId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Groupe',
       required: true,
     },
     titre: { type: String, required: true },

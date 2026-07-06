@@ -35,7 +35,9 @@ export default function CreateChapitrePage() {
 
   useEffect(() => {
     if (!userInfo?.isAdmin && userInfo?.role !== 'prof') { router.push('/'); return }
-    Axios.get(`${API}/api/niveaux`).then(r => setNiveaux(r.data))
+    Axios.get(`${API}/api/niveaux`)
+      .then(r => setNiveaux(Array.isArray(r.data) ? r.data : []))
+      .catch(e => { console.error(e); setNiveaux([]) })
   }, [])
 
   const set = (path, value) => {

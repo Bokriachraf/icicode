@@ -62,6 +62,7 @@ router.put('/complete', isAuth, async (req, res) => {
     user.isInscriptionComplete = true
 
     const updatedUser = await user.save()
+    console.log(`✅ User ${updatedUser._id} — niveauId: ${updatedUser.niveauId}`)
 
     res.json({
       _id: updatedUser._id,

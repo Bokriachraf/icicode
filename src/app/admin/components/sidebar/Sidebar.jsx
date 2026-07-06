@@ -66,6 +66,7 @@ export default function Sidebar() {
               <h3 className="sidebarTitle">Facturation</h3>
               <ul className="sidebarList">
                 <NavItem href="/admin/paiements" icon={<AttachMoney />} label="Paiements" active={active('/admin/paiements')} />
+                <NavItem href="/admin/plans" icon={<AttachMoney />} label="Plans tarifaires" active={active('/admin/plans')} />
               </ul>
             </div>
           </>
@@ -76,9 +77,12 @@ export default function Sidebar() {
           <div className="sidebarMenu">
             <h3 className="sidebarTitle">Contenu</h3>
             <ul className="sidebarList">
-              <NavItem href="/admin/chapitres" icon={<MenuBook />} label="Chapitres" active={active('/admin/chapitres')} />
-              <NavItem href="/admin/seances" icon={<VideoCall />} label="Séances" active={active('/admin/seances')} />
-              <NavItem href="/admin/exercices" icon={<FitnessCenter />} label="Exercices" active={active('/admin/exercices')} />
+              <NavItem href="/admin/chapitres"   icon={<MenuBook />}   label="Chapitres"   active={active('/admin/chapitres')} />
+              <NavItem href="/admin/seances"     icon={<VideoCall />}  label="Séances"     active={active('/admin/seances')} />
+              <NavItem href="/admin/groupes"     icon={<People />}     label="Groupes"     active={active('/admin/groupes')} />
+              <NavItem href="/admin/exercices"   icon={<FitnessCenter />} label="Exercices" active={active('/admin/exercices')} />
+              <NavItem href="/admin/affectations" icon={<AssignmentTurnedIn />} label="Affectations" active={active('/admin/affectations')} />
+              <NavItem href="/admin/corrections" icon={<AssignmentTurnedIn />} label="Corrections" active={active('/admin/corrections')} />
             </ul>
           </div>
         )}

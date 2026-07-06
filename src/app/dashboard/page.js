@@ -1,11 +1,14 @@
 'use client';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { listChapitres } from '../../redux/actions/chapitreActions';
 import { listSeances } from '../../redux/actions/seanceActions';
+import Axios from 'axios';
+
+const API = process.env.NEXT_PUBLIC_API_URL;
 
 export default function Dashboard() {
   const dispatch = useDispatch();
@@ -14,17 +17,40 @@ export default function Dashboard() {
   const { userInfo } = useSelector((state) => state.userSignin);
   const { loading: loadingChapitres, chapitres = [] } = useSelector((state) => state.chapitreList);
   const { loading: loadingSeances, seances = [] } = useSelector((state) => state.seanceList);
+  const [abonnement, setAbonnement] = useState(null);
+
+  useEffect(() => {
+    if (!userInfo) return;
+    Axios.get(`${API}/api/abonnements/mon`, {
+      headers: { Authorization: `Bearer ${userInfo.token}` },
+    })
+      .then(({ data }) => setAbonnement(data || null))
+      .catch(() => setAbonnement(null));
+  }, [userInfo]);
 
   useEffect(() => {
     if (!userInfo) { router.push('/signin'); return; }
-    const niveauId = userInfo.niveauId || null;
-    dispatch(listChapitres(niveauId));
-    dispatch(listSeances(niveauId));
+    // Ne charger les chapitres que si l'élève est inscrit et a un niveau
+    if (userInfo.isInscriptionComplete && userInfo.niveauId) {
+      dispatch(listChapitres(userInfo.niveauId));
+      dispatch(listSeances());
+    }
   }, [dispatch, userInfo]);
 
   if (!userInfo) return null;
 
   const prochaine = seances.find((s) => s.statut === 'planifiée');
+
+  // On ne garde que les chapitres réellement rattachés à une séance de l'élève
+  // (donc à un groupe dont il est membre) — pas tous les chapitres du niveau.
+  const chapitreIdsAssignes = new Set(
+    seances
+      .map((s) => s.chapitreId?._id || s.chapitreId)
+      .filter(Boolean)
+      .map((id) => id.toString())
+  );
+  const mesChapitres = chapitres.filter((c) => chapitreIdsAssignes.has(c._id.toString()));
+  const chargement = loadingChapitres || loadingSeances;
 
   return (
     <div className="min-h-screen pt-20 pb-12 px-4 md:px-10">
@@ -37,6 +63,26 @@ export default function Dashboard() {
           {userInfo.niveauNom || "Votre espace d'apprentissage"}
         </p>
       </motion.div>
+
+      {/* Rappel abonnement si inscrit mais pas abonné */}
+      {userInfo.isInscriptionComplete && !abonnement && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8 rounded-2xl p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
+          style={{ background: 'linear-gradient(90deg, rgba(255,193,7,0.15), rgba(255,193,7,0.05))', border: '1px solid rgba(255,193,7,0.3)' }}
+        >
+          <div>
+            <p className="text-sm font-medium mb-1" style={{ color: '#FFC107' }}>Activez votre abonnement</p>
+            <h2 className="text-lg font-bold" style={{ color: 'var(--brand-white)' }}>Débloquez l'accès complet à vos cours</h2>
+          </div>
+          <Link href="/abonnement">
+            <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }} className="brand-btn whitespace-nowrap">
+              Voir les plans →
+            </motion.button>
+          </Link>
+        </motion.div>
+      )}
 
       {/* CTA inscription si pas encore inscrit */}
       {!userInfo.isInscriptionComplete && (
@@ -98,15 +144,15 @@ export default function Dashboard() {
         </Link>
       </div>
 
-      {loadingChapitres ? (
+      {chargement ? (
         <div className="text-center py-10" style={{ color: 'var(--text-muted)' }}>Chargement...</div>
-      ) : chapitres.length === 0 ? (
+      ) : mesChapitres.length === 0 ? (
         <div className="text-center py-10" style={{ color: 'var(--text-muted)' }}>
-          Aucun chapitre disponible pour votre niveau.
+          Aucun chapitre pour l'instant — il s'affichera ici dès qu'une séance de votre groupe y sera liée.
         </div>
       ) : (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {chapitres.map((chapitre, i) => (
+          {mesChapitres.map((chapitre, i) => (
             <motion.div
               key={chapitre._id}
               initial={{ opacity: 0, y: 20 }}
