@@ -44,9 +44,7 @@ export default function Sidebar() {
           <h3 className="sidebarTitle">Tableau de bord</h3>
           <ul className="sidebarList">
             <NavItem href="/admin" icon={<Dashboard />} label="Accueil" active={pathname === '/admin'} />
-            {isGeneralAdmin && (
-              <NavItem href="/admin/stats" icon={<BarChart />} label="Statistiques" active={active('/admin/stats')} />
-            )}
+            {/* Statistiques : page pas encore construite, lien retiré pour éviter le 404 */}
           </ul>
         </div>
 
@@ -58,7 +56,7 @@ export default function Sidebar() {
               <ul className="sidebarList">
                 <NavItem href="/admin/inscription" icon={<AssignmentTurnedIn />} label="Inscriptions" active={active('/admin/inscription')} />
                 <NavItem href="/admin/users" icon={<People />} label="Utilisateurs" active={active('/admin/users')} />
-                <NavItem href="/admin/niveaux" icon={<School />} label="Niveaux" active={active('/admin/niveaux')} />
+                {/* Niveaux : page pas encore construite, lien retiré pour éviter le 404 */}
               </ul>
             </div>
 
@@ -87,14 +85,8 @@ export default function Sidebar() {
           </div>
         )}
 
-        {isProf && (
-          <div className="sidebarMenu">
-            <h3 className="sidebarTitle">Suivi</h3>
-            <ul className="sidebarList">
-              <NavItem href="/admin/progression" icon={<BarChart />} label="Progressions" active={active('/admin/progression')} />
-            </ul>
-          </div>
-        )}
+        {/* Progressions : page pas encore construite, lien retiré pour éviter le 404
+            (utilise /admin/corrections en attendant, qui couvre la correction) */}
 
         {/* ── Paramètres ── */}
         <div className="sidebarMenu">
