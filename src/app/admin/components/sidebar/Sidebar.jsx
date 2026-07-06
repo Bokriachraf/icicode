@@ -44,7 +44,9 @@ export default function Sidebar() {
           <h3 className="sidebarTitle">Tableau de bord</h3>
           <ul className="sidebarList">
             <NavItem href="/admin" icon={<Dashboard />} label="Accueil" active={pathname === '/admin'} />
-            {/* Statistiques : page pas encore construite, lien retiré pour éviter le 404 */}
+            {isGeneralAdmin && (
+              <NavItem href="/admin/stats" icon={<BarChart />} label="Statistiques" active={active('/admin/stats')} />
+            )}
           </ul>
         </div>
 
