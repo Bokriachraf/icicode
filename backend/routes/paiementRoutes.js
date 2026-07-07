@@ -97,6 +97,48 @@ paiementRouter.get('/flouci/verify', isAuth, expressAsyncHandler(async (req, res
   res.json({ statut: 'échoué' });
 }));
 
+// ── POST /api/paiements/virement/demander — l'élève déclare vouloir payer par virement/RIB ──
+paiementRouter.post('/virement/demander', isAuth, expressAsyncHandler(async (req, res) => {
+  const { planId, reference } = req.body;
+
+  const plan = await Plan.findById(planId);
+  if (!plan) return res.status(404).json({ message: 'Plan introuvable' });
+
+  // Réutilise une demande déjà "suspendu" pour ce plan plutôt que d'en recréer une
+  let abonnement = await Abonnement.findOne({
+    eleveId: req.user._id,
+    planId,
+    statut: 'suspendu',
+  });
+
+  if (!abonnement) {
+    const dateDebut = new Date();
+    const dateEcheance = new Date();
+    dateEcheance.setMonth(dateEcheance.getMonth() + plan.dureeEngagement);
+
+    abonnement = await Abonnement.create({
+      eleveId: req.user._id,
+      planId,
+      dateDebut,
+      dateEcheance,
+      statut: 'suspendu',
+      methodePaiement: 'virement',
+    });
+  }
+
+  const paiement = await Paiement.create({
+    abonnementId: abonnement._id,
+    eleveId: req.user._id,
+    montant: plan.prix,
+    statut: 'en_attente',
+    methode: 'virement',
+    periode: { debut: abonnement.dateDebut, fin: abonnement.dateEcheance },
+    note: reference ? `Référence communiquée par l'élève : ${reference}` : null,
+  });
+
+  res.status(201).json({ abonnement, paiement });
+}));
+
 // ── GET /api/paiements/mes — historique élève ─────────────────────────────────
 paiementRouter.get('/mes', isAuth, expressAsyncHandler(async (req, res) => {
   const paiements = await Paiement.find({ eleveId: req.user._id })

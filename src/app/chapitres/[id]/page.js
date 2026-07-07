@@ -15,6 +15,7 @@ export default function ChapitrePage() {
 
   const { userInfo } = useSelector((state) => state.userSignin);
   const { loading, chapitre, error } = useSelector((state) => state.chapitreDetails);
+  const [abonnementRequis, setAbonnementRequis] = useState(false);
 
   const [onglet, setOnglet] = useState('math'); // 'math' | 'python'
   const [code, setCode] = useState('');
@@ -33,7 +34,9 @@ export default function ChapitrePage() {
     const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
     Axios.get(`${API}/api/affectations/eleve/${id}`, config)
       .then(r => setExercicesAffectes(r.data))
-      .catch(() => {});
+      .catch((err) => {
+        if (err.response?.data?.code === 'ABONNEMENT_REQUIS') setAbonnementRequis(true);
+      });
   }, [dispatch, id, userInfo]);
 
   useEffect(() => {
@@ -99,9 +102,25 @@ sys.stdout = StringIO()
     </div>
   );
 
+  if (abonnementRequis || error?.code === 'ABONNEMENT_REQUIS') return (
+    <div className="min-h-screen flex items-center justify-center px-4">
+      <div className="bg-white rounded-2xl shadow-sm border border-amber-200 p-8 max-w-md text-center">
+        <p className="text-4xl mb-4">🔒</p>
+        <h1 className="text-xl font-bold text-gray-800 mb-2">Abonnement requis</h1>
+        <p className="text-sm text-gray-500 mb-6">
+          Ce chapitre est réservé aux élèves avec un abonnement actif. Activez le vôtre pour débloquer l'accès complet.
+        </p>
+        <button onClick={() => router.push('/abonnement')}
+          className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2.5 rounded-xl transition text-sm">
+          Voir les plans →
+        </button>
+      </div>
+    </div>
+  );
+
   if (error) return (
     <div className="min-h-screen flex items-center justify-center text-red-500">
-      {error}
+      {error.message || 'Une erreur est survenue.'}
     </div>
   );
 

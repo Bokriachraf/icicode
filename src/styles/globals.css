@@ -7,6 +7,11 @@
    Palette extraite du CodalogLogo (hexagone, nœuds, fond)
    ============================================================ */
 :root {
+  /* Indique au navigateur d'utiliser le thème sombre pour les éléments natifs
+     (autofill, <select>, scrollbar, checkbox/radio) au lieu du thème clair
+     système, qui écrasait nos couleurs (texte noir sur fond bleu). */
+  color-scheme: dark;
+
   /* Fond global */
   --background: #000D1A;
   --foreground: #E8F4FF;
@@ -161,6 +166,32 @@ body {
   margin: 20px;
 }
 
+/* ---- Fix menu déroulant natif des <select> (popup blanc/texte blanc avant choix) ----
+   color-scheme: dark seul n'est pas fiable sur tous les navigateurs/OS pour
+   forcer le popup natif en sombre ; on cible directement <option>, propriété
+   supportée nativement même pour les listes non stylables. ---- */
+select option {
+  background-color: var(--brand-dark);
+  color: var(--brand-white);
+}
+select option:checked,
+select option:hover {
+  background-color: var(--brand-mid);
+}
+
+/* ---- Fix auto-remplissage navigateur (Chrome force un fond clair + texte noir) ---- */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+select:-webkit-autofill {
+  -webkit-text-fill-color: var(--brand-white) !important;
+  -webkit-box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0.06) inset !important;
+  box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0.06) inset !important;
+  caret-color: var(--brand-white);
+  transition: background-color 9999s ease-in-out 0s;
+}
+
 /* ---- Fix inputs sur fond blanc (formulaires inscription, register, signin) ---- */
 .form-light input,
 .form-light select,
@@ -179,15 +210,4 @@ body {
 .bg-gray-50 select {
   color: #111827 !important;
   background-color: #ffffff !important;
-}
-
-/* Fix spécifique formulaire Step inscription (bg-white p-5) */
-form.space-y-6 input,
-form.space-y-6 select,
-form.space-y-6 textarea,
-form.space-y-4 input,
-form.space-y-4 select,
-form.space-y-5 input,
-form.space-y-5 select {
-  color: #111827 !important;
 }

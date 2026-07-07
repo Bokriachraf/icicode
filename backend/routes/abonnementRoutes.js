@@ -8,9 +8,16 @@ const abonnementRouter = express.Router();
 
 // GET /api/abonnements/mon — abonnement actif de l'élève connecté
 abonnementRouter.get('/mon', isAuth, expressAsyncHandler(async (req, res) => {
+  // Expire automatiquement (en base) tout abonnement 'actif' dont l'échéance est dépassée
+  await Abonnement.updateMany(
+    { eleveId: req.user._id, statut: 'actif', dateEcheance: { $lt: new Date() } },
+    { $set: { statut: 'expiré' } }
+  );
+
   const abonnement = await Abonnement.findOne({
     eleveId: req.user._id,
     statut: 'actif',
+    dateEcheance: { $gte: new Date() },
   }).populate({ path: 'planId', populate: { path: 'niveauId', select: 'nom' } });
   res.json(abonnement || null);
 }));

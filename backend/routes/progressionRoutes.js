@@ -2,7 +2,7 @@ import express from 'express';
 import expressAsyncHandler from 'express-async-handler';
 import Progression from '../models/progressionModel.js';
 import Chapitre from '../models/chapitreModel.js';
-import { isAuth, isAdmin, isProf } from '../utils.js';
+import { isAuth, isAdmin, isProf, hasActiveAbonnement } from '../utils.js';
 
 const progressionRouter = express.Router();
 
@@ -38,6 +38,7 @@ progressionRouter.get(
 progressionRouter.post(
   '/demarrer',
   isAuth,
+  hasActiveAbonnement,
   expressAsyncHandler(async (req, res) => {
     const { chapitreId } = req.body;
     let progression = await Progression.findOne({ userId: req.user._id, chapitreId });
@@ -57,6 +58,7 @@ progressionRouter.post(
 progressionRouter.put(
   '/terminer-math',
   isAuth,
+  hasActiveAbonnement,
   expressAsyncHandler(async (req, res) => {
     const { chapitreId } = req.body;
     const chapitre = await Chapitre.findById(chapitreId);
@@ -80,6 +82,7 @@ progressionRouter.put(
 progressionRouter.post(
   '/soumettre',
   isAuth,
+  hasActiveAbonnement,
   expressAsyncHandler(async (req, res) => {
     const { chapitreId, exerciceId, reponse, validation } = req.body;
 

@@ -9,6 +9,7 @@ import {
   SEANCE_JOIN_SUCCESS,
   SEANCE_JOIN_FAIL,
 } from '../constants/seanceConstants';
+import { USER_SIGNIN_SUCCESS, USER_SIGNOUT } from '../constants/userConstants';
 
 export const seanceListReducer = (state = { seances: [] }, action) => {
   switch (action.type) {
@@ -18,6 +19,10 @@ export const seanceListReducer = (state = { seances: [] }, action) => {
       return { loading: false, seances: action.payload };
     case SEANCE_LIST_FAIL:
       return { loading: false, error: action.payload };
+    // Nouveau login/register OU déconnexion → on vide les séances de l'ancien compte
+    case USER_SIGNIN_SUCCESS:
+    case USER_SIGNOUT:
+      return { seances: [] };
     default:
       return state;
   }
@@ -31,6 +36,9 @@ export const seanceDetailsReducer = (state = { seance: null }, action) => {
       return { loading: false, seance: action.payload };
     case SEANCE_DETAILS_FAIL:
       return { loading: false, error: action.payload };
+    case USER_SIGNIN_SUCCESS:
+    case USER_SIGNOUT:
+      return { seance: null };
     default:
       return state;
   }

@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import Abonnement from './models/abonnementModel.js';
 
 export const generateToken = (user) => {
   return jwt.sign(
@@ -84,3 +85,29 @@ export const isProf = (req, res, next) => {
     res.status(403).json({ message: 'Accès refusé : professeur uniquement' })
   }
 }
+
+// Middleware abonnement actif : bloque l'accès au contenu pédagogique tant que
+// l'élève n'a pas d'abonnement 'actif' avec une date d'échéance non dépassée.
+// Les admins et profs passent toujours (ils n'ont pas besoin d'abonnement).
+export const hasActiveAbonnement = async (req, res, next) => {
+  if (req.user && (req.user.isAdmin || req.user.role === 'prof')) {
+    return next();
+  }
+  try {
+    const abonnement = await Abonnement.findOne({
+      eleveId: req.user._id,
+      statut: 'actif',
+      dateEcheance: { $gte: new Date() },
+    });
+    if (!abonnement) {
+      return res.status(402).json({
+        message: 'Un abonnement actif est requis pour accéder à ce contenu.',
+        code: 'ABONNEMENT_REQUIS',
+      });
+    }
+    req.abonnement = abonnement;
+    next();
+  } catch (e) {
+    res.status(500).json({ message: 'Erreur de vérification de l\'abonnement.' });
+  }
+};

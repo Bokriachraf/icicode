@@ -1,7 +1,7 @@
 import express from 'express';
 import expressAsyncHandler from 'express-async-handler';
 import Chapitre from '../models/chapitreModel.js';
-import { isAuth, isAdmin, isProf } from '../utils.js';
+import { isAuth, isAdmin, isProf, hasActiveAbonnement } from '../utils.js';
 
 const chapitreRouter = express.Router();
 
@@ -21,10 +21,11 @@ chapitreRouter.get(
   })
 );
 
-// GET /api/chapitres/:id — détail d'un chapitre
+// GET /api/chapitres/:id — détail d'un chapitre (nécessite un abonnement actif pour un élève)
 chapitreRouter.get(
   '/:id',
   isAuth,
+  hasActiveAbonnement,
   expressAsyncHandler(async (req, res) => {
     const chapitre = await Chapitre.findById(req.params.id)
       .populate('niveauId', 'nom equivalenceFrance')

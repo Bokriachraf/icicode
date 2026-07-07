@@ -2,7 +2,7 @@ import express from 'express';
 import expressAsyncHandler from 'express-async-handler';
 import Affectation from '../models/affectationModel.js';
 import Groupe from '../models/groupeModel.js';
-import { isAuth, isProf } from '../utils.js';
+import { isAuth, isProf, hasActiveAbonnement } from '../utils.js';
 
 const affectationRouter = express.Router();
 
@@ -76,6 +76,7 @@ affectationRouter.post(
 affectationRouter.get(
   '/eleve',
   isAuth,
+  hasActiveAbonnement,
   expressAsyncHandler(async (req, res) => {
     const userId = req.user._id;
 
@@ -113,6 +114,7 @@ affectationRouter.get(
 affectationRouter.get(
   '/eleve/:chapitreId',
   isAuth,
+  hasActiveAbonnement,
   expressAsyncHandler(async (req, res) => {
     const userId = req.user._id;
     const { chapitreId } = req.params;

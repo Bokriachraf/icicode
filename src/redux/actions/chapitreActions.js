@@ -38,7 +38,10 @@ export const getChapitreDetails = (id) => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: CHAPITRE_DETAILS_FAIL,
-      payload: error.response?.data?.message || error.message,
+      payload: {
+        message: error.response?.data?.message || error.message,
+        code: error.response?.data?.code || null,
+      },
     });
   }
 };

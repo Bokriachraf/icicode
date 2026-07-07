@@ -180,9 +180,10 @@ export default function Dashboard() {
                 <span className="brand-badge brand-badge-cyan">🐍 Python</span>
               </div>
 
-              <Link href={`/chapitres/${chapitre._id}`}>
-                <button className="brand-btn w-full justify-center mt-auto">
-                  Commencer
+              <Link href={abonnement ? `/chapitres/${chapitre._id}` : '/abonnement'}>
+                <button className={`w-full justify-center mt-auto ${abonnement ? 'brand-btn' : ''}`}
+                  style={!abonnement ? { background: 'rgba(255,255,255,0.06)', color: 'var(--text-secondary)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '0.75rem', padding: '0.65rem 1rem', fontWeight: 600, fontSize: '0.875rem' } : {}}>
+                  {abonnement ? 'Commencer' : '🔒 Débloquer'}
                 </button>
               </Link>
             </motion.div>

@@ -7,6 +7,13 @@ import { motion } from 'framer-motion'
 
 const API = process.env.NEXT_PUBLIC_API_URL
 
+// Flouci masqué pour le moment (pas de compte configuré) — remettre à true une fois prêt
+const FLOUCI_ENABLED = false
+
+const RIB = process.env.NEXT_PUBLIC_RIB || 'TN59 XX XXX XXXXXXXXXXXXX XX'
+const RIB_TITULAIRE = process.env.NEXT_PUBLIC_RIB_TITULAIRE || 'Codalog'
+const RIB_BANQUE = process.env.NEXT_PUBLIC_RIB_BANQUE || ''
+
 const statutLabel = {
   actif:    { text: '✅ Actif',    color: 'text-green-400 bg-green-500/10 border-green-500/30' },
   suspendu: { text: '⏸ Suspendu', color: 'text-amber-400 bg-amber-500/10 border-amber-500/30' },
@@ -31,6 +38,9 @@ export default function AbonnementPage() {
   const [loading,    setLoading]    = useState(true)
   const [paying,     setPaying]     = useState(null)
   const [msg,        setMsg]        = useState(null)
+  const [virementOuvert, setVirementOuvert] = useState(null) // planId dont le panneau RIB est ouvert
+  const [reference,      setReference]      = useState('')
+  const [envoiVirement,  setEnvoiVirement]  = useState(false)
 
   useEffect(() => {
     if (!userInfo) { router.push('/signin'); return }
@@ -72,12 +82,28 @@ export default function AbonnementPage() {
       }
     } catch (e) {
       if (e.response?.data?.code === 'FLOUCI_NOT_CONFIGURED') {
-        setMsg('ℹ️ Le paiement en ligne n\'est pas encore disponible. Contactez-nous pour vous abonner par espèces ou virement en attendant.')
+        setMsg('ℹ️ Le paiement en ligne n\'est pas encore disponible. Utilisez le virement bancaire en attendant.')
       } else {
         setMsg('❌ Erreur lors de l\'initialisation du paiement.')
       }
       setPaying(null)
     }
+  }
+
+  const demanderVirement = async (planId) => {
+    setEnvoiVirement(true)
+    setMsg(null)
+    try {
+      const cfg = { headers: { Authorization: `Bearer ${userInfo.token}` } }
+      await Axios.post(`${API}/api/paiements/virement/demander`, { planId, reference }, cfg)
+      setMsg('✅ Demande enregistrée ! Effectuez le virement avec la référence ci-dessus, un administrateur activera votre abonnement dès réception.')
+      setVirementOuvert(null)
+      setReference('')
+      fetchAll()
+    } catch (e) {
+      setMsg('❌ Erreur lors de l\'enregistrement de la demande.')
+    }
+    setEnvoiVirement(false)
   }
 
   if (!userInfo) return null
@@ -162,16 +188,57 @@ export default function AbonnementPage() {
                       {p.description && (
                         <p className="text-xs leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{p.description}</p>
                       )}
-                      <button
-                        onClick={() => payer(p._id)}
-                        disabled={paying === p._id}
-                        className="brand-btn w-full justify-center mt-auto"
-                      >
-                        {paying === p._id ? 'Redirection...' : '💳 Payer avec Flouci'}
-                      </button>
-                      <p className="text-xs text-center" style={{ color: 'var(--text-muted)' }}>
-                        Ou contactez-nous pour un paiement par espèces / virement
-                      </p>
+
+                      {FLOUCI_ENABLED && (
+                        <button
+                          onClick={() => payer(p._id)}
+                          disabled={paying === p._id}
+                          className="brand-btn w-full justify-center"
+                        >
+                          {paying === p._id ? 'Redirection...' : '💳 Payer avec Flouci'}
+                        </button>
+                      )}
+
+                      {virementOuvert === p._id ? (
+                        <div className="rounded-xl p-4 flex flex-col gap-3" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                          <div className="text-xs leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+                            <p><strong style={{ color: 'var(--brand-white)' }}>Titulaire :</strong> {RIB_TITULAIRE}</p>
+                            {RIB_BANQUE && <p><strong style={{ color: 'var(--brand-white)' }}>Banque :</strong> {RIB_BANQUE}</p>}
+                            <p><strong style={{ color: 'var(--brand-white)' }}>RIB :</strong> {RIB}</p>
+                            <p className="mt-1"><strong style={{ color: 'var(--brand-white)' }}>Montant :</strong> {p.prix} TND</p>
+                          </div>
+                          <input
+                            type="text"
+                            value={reference}
+                            onChange={(e) => setReference(e.target.value)}
+                            placeholder="Référence du virement (optionnel)"
+                            className="w-full rounded-lg px-3 py-2 text-sm"
+                            style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: 'var(--brand-white)' }}
+                          />
+                          <button
+                            onClick={() => demanderVirement(p._id)}
+                            disabled={envoiVirement}
+                            className="brand-btn w-full justify-center"
+                          >
+                            {envoiVirement ? 'Envoi...' : "J'ai effectué le virement →"}
+                          </button>
+                          <button
+                            onClick={() => setVirementOuvert(null)}
+                            className="text-xs"
+                            style={{ color: 'var(--text-muted)' }}
+                          >
+                            Annuler
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => setVirementOuvert(p._id)}
+                          className="w-full justify-center mt-auto"
+                          style={{ background: 'rgba(255,255,255,0.06)', color: 'var(--brand-white)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '0.75rem', padding: '0.65rem 1rem', fontWeight: 600, fontSize: '0.875rem' }}
+                        >
+                          🏦 Payer par virement bancaire (RIB)
+                        </button>
+                      )}
                     </div>
                   ))}
                 </div>

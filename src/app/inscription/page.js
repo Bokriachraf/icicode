@@ -1,90 +1,67 @@
 'use client'
 
 import { useState } from 'react'
+import { motion } from 'framer-motion'
 import PrivateRoute from '../../components/PrivateRoute'
 import Step1 from './Step1'
 import Step2 from './Step2'
 import Step3 from './Step3'
+
+const STEPS = ['Formation', 'Disponibilité', 'À propos de vous']
 
 export default function InscriptionPage() {
   const [step, setStep] = useState(1)
 
   return (
     <PrivateRoute>
-      <div className="pt-12 pb-24 max-w-md mx-auto mt-6 bg-white rounded-xl shadow-md text-sm sm:text-base space-y-6">
-        
-        {/* Progress */}
-        <div className="flex justify-between">
-          {[
-            'Départ et arrivée',
-            'Détails du projet',
-            'À propos de vous',
-          ].map((label, index) => {
-            const current = index + 1 === step
-            return (
-              <div
-                key={label}
-                className={`flex-1 text-center pb-2 border-b-4 transition-all ${
-                  current
-                    ? 'border-green-600 font-semibold text-green-700'
-                    : 'border-gray-300 text-gray-400'
-                }`}
-              >
-                {index + 1}. {label}
-              </div>
-            )
-          })}
-        </div>
+      <div className="min-h-screen flex items-center justify-center px-4 py-16">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="brand-card w-full max-w-lg p-6 sm:p-10"
+        >
+          <h1 className="text-xl font-bold text-center mb-1" style={{ color: 'var(--brand-white)' }}>
+            Rejoindre Codalog
+          </h1>
+          <p className="text-center text-sm mb-8" style={{ color: 'var(--text-secondary)' }}>
+            Quelques informations pour personnaliser votre parcours
+          </p>
 
-        {step === 1 && <Step1 onNext={() => setStep(2)} />}
-        {step === 2 && <Step2 onNext={() => setStep(3)} onBack={() => setStep(1)} />}
-        {step === 3 && <Step3 onBack={() => setStep(2)} />}
+          {/* Progress */}
+          <div className="flex justify-between mb-8 gap-2">
+            {STEPS.map((label, index) => {
+              const num = index + 1
+              const current = num === step
+              const done = num < step
+              return (
+                <div key={label} className="flex-1 text-center">
+                  <div
+                    className="mx-auto mb-2 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition"
+                    style={{
+                      background: done || current ? 'linear-gradient(135deg, #00FFD1, #00AAFF)' : 'rgba(255,255,255,0.06)',
+                      color: done || current ? '#001830' : 'var(--text-muted)',
+                      border: done || current ? 'none' : '1px solid rgba(255,255,255,0.14)',
+                    }}
+                  >
+                    {done ? '✓' : num}
+                  </div>
+                  <div
+                    className="text-[0.65rem] uppercase tracking-wide font-medium"
+                    style={{ color: current ? 'var(--brand-cyan)' : 'var(--text-muted)' }}
+                  >
+                    {label}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+
+          {step === 1 && <Step1 onNext={() => setStep(2)} />}
+          {step === 2 && <Step2 onNext={() => setStep(3)} onBack={() => setStep(1)} />}
+          {step === 3 && <Step3 onPrevious={() => setStep(2)} />}
+        </motion.div>
       </div>
     </PrivateRoute>
   )
 }
-
-
-
-
-// 'use client'
-
-// import { useState } from 'react'
-// import PrivateRoute from '../../components/PrivateRoute';
-// import Step1 from './Step1'
-// import Step2 from './Step2'
-// import Step3 from './Step3'
-
-// export default function InscriptionPage() {
-//   const [step, setStep] = useState(1)
-
-//   const handleNext = () => {
-//     if (step < 3) setStep(step + 1)
-//   }
-
-//   const handleBack = () => {
-//     if (step > 1) setStep(step - 1)
-//   }
-
-//   return (
-//     <PrivateRoute>
-//       <div className="pt-11 pb-24 max-w-md mx-auto mt-6 bg-white rounded shadow text-xs space-y-4">
-//         <div className="flex justify-between mb-8">
-//           <div className={`flex-1 text-center pb-2 border-b-4 ${step === 1 ? 'border-green-600 font-bold' : 'border-gray-300'}`}>
-//             1. Départ et arrivée
-//           </div>
-//           <div className={`flex-1 text-center pb-2 border-b-4 ${step === 2 ? 'border-green-600 font-bold' : 'border-gray-300'}`}>
-//             2. Détails du projet
-//           </div>
-//           <div className={`flex-1 text-center pb-2 border-b-4 ${step === 3 ? 'border-green-600 font-bold' : 'border-gray-300'}`}>
-//             3. À propos de vous
-//           </div>
-//         </div>
-
-//         {step === 1 && <Step1 onNext={handleNext} />}
-//         {step === 2 && <Step2 onNext={handleNext} onBack={handleBack} />}
-//         {step === 3 && <Step3 onBack={handleBack} />}
-//       </div>
-//     </PrivateRoute>
-//   )
-// }

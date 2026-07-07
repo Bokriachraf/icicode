@@ -6,6 +6,7 @@ import {
   CHAPITRE_DETAILS_SUCCESS,
   CHAPITRE_DETAILS_FAIL,
 } from '../constants/chapitreConstants';
+import { USER_SIGNIN_SUCCESS, USER_SIGNOUT } from '../constants/userConstants';
 
 export const chapitreListReducer = (state = { chapitres: [] }, action) => {
   switch (action.type) {
@@ -15,6 +16,9 @@ export const chapitreListReducer = (state = { chapitres: [] }, action) => {
       return { loading: false, chapitres: action.payload };
     case CHAPITRE_LIST_FAIL:
       return { loading: false, error: action.payload };
+    case USER_SIGNIN_SUCCESS:
+    case USER_SIGNOUT:
+      return { chapitres: [] };
     default:
       return state;
   }
@@ -28,6 +32,9 @@ export const chapitreDetailsReducer = (state = { chapitre: null }, action) => {
       return { loading: false, chapitre: action.payload };
     case CHAPITRE_DETAILS_FAIL:
       return { loading: false, error: action.payload };
+    case USER_SIGNIN_SUCCESS:
+    case USER_SIGNOUT:
+      return { chapitre: null };
     default:
       return state;
   }

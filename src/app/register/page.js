@@ -4,13 +4,20 @@ import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { register } from "../../redux/actions/userActions";
+
+const inputClass =
+  "w-full bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.14)] rounded-lg px-4 py-3 text-[15px] text-[var(--brand-white)] placeholder-[rgba(168,200,230,0.35)] focus:outline-none focus:ring-2 focus:ring-[var(--brand-cyan)] focus:border-[var(--brand-cyan)] transition";
+
+const labelClass = "block text-xs font-medium tracking-wide uppercase mb-2";
 
 export default function RegisterScreen() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [mismatch, setMismatch] = useState(false);
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -22,102 +29,100 @@ export default function RegisterScreen() {
   const submitHandler = (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      alert("❌ Les mots de passe ne correspondent pas.");
+      setMismatch(true);
       return;
     }
+    setMismatch(false);
     dispatch(register(name, email, password, router));
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-10 px-4">
-      <div className="bg-white shadow-md rounded-2xl p-8 w-full max-w-md">
-        <h1 className="text-2xl font-bold text-center mb-2 text-gray-800">
+    <div className="relative min-h-screen flex items-center justify-center py-16 px-4">
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="brand-card w-full max-w-md p-8 sm:p-10"
+      >
+        <div className="flex items-center justify-center gap-[2px] mb-1">
+          {[
+            { c: 'C', b: false }, { c: 'O', b: true }, { c: 'D', b: false },
+            { c: '@', b: true }, { c: 'L', b: false }, { c: 'O', b: true }, { c: 'G', b: false },
+          ].map(({ c, b }, i) => (
+            <span key={i} className="font-extrabold text-2xl"
+              style={{ color: b ? '#00AAFF' : 'var(--brand-white)', fontFamily: "'JetBrains Mono', monospace" }}>
+              {c}
+            </span>
+          ))}
+        </div>
+
+        <h1 className="text-xl font-bold text-center mt-3 mb-1" style={{ color: 'var(--brand-white)' }}>
           Créer un compte
         </h1>
-        <p className="text-center text-gray-400 text-sm mb-6">
+        <p className="text-center text-sm mb-7" style={{ color: 'var(--text-secondary)' }}>
           Rejoignez Codalog et commencez à apprendre
         </p>
 
         {loading && (
-          <div className="bg-blue-50 text-blue-700 px-4 py-2 rounded mb-4 text-sm">
+          <div className="px-4 py-2.5 rounded-lg mb-4 text-sm border" style={{ background: 'rgba(74,144,226,0.1)', borderColor: 'rgba(74,144,226,0.3)', color: '#7BBAFF' }}>
             Création en cours...
           </div>
         )}
+        {mismatch && (
+          <div className="px-4 py-2.5 rounded-lg mb-4 text-sm border" style={{ background: 'rgba(255,80,80,0.08)', borderColor: 'rgba(255,80,80,0.3)', color: '#FF8A8A' }}>
+            Les mots de passe ne correspondent pas.
+          </div>
+        )}
         {error && (
-          <div className="bg-red-50 text-red-600 px-4 py-2 rounded mb-4 text-sm">
+          <div className="px-4 py-2.5 rounded-lg mb-4 text-sm border" style={{ background: 'rgba(255,80,80,0.08)', borderColor: 'rgba(255,80,80,0.3)', color: '#FF8A8A' }}>
             {error}
           </div>
         )}
 
         <form onSubmit={submitHandler} className="space-y-4">
           <div>
-            <label className="block text-sm text-gray-600 mb-1">Nom complet</label>
-            <input
-              type="text"
-              required
-              placeholder="Votre nom"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 text-sm"
-            />
+            <label className={labelClass} style={{ color: 'var(--text-secondary)' }}>Nom complet</label>
+            <input type="text" required placeholder="Votre nom" value={name}
+              onChange={(e) => setName(e.target.value)} className={inputClass} />
           </div>
 
           <div>
-            <label className="block text-sm text-gray-600 mb-1">Adresse e-mail</label>
-            <input
-              type="email"
-              required
-              placeholder="votre@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 text-sm"
-            />
+            <label className={labelClass} style={{ color: 'var(--text-secondary)' }}>Adresse e-mail</label>
+            <input type="email" required placeholder="votre@email.com" value={email}
+              onChange={(e) => setEmail(e.target.value)} className={inputClass} />
           </div>
 
           <div>
-            <label className="block text-sm text-gray-600 mb-1">Mot de passe</label>
-            <input
-              type="password"
-              required
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 text-sm"
-            />
+            <label className={labelClass} style={{ color: 'var(--text-secondary)' }}>Mot de passe</label>
+            <input type="password" required placeholder="••••••••" value={password}
+              onChange={(e) => setPassword(e.target.value)} className={inputClass} />
           </div>
 
           <div>
-            <label className="block text-sm text-gray-600 mb-1">
-              Confirmer le mot de passe
-            </label>
-            <input
-              type="password"
-              required
-              placeholder="••••••••"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 text-sm"
-            />
+            <label className={labelClass} style={{ color: 'var(--text-secondary)' }}>Confirmer le mot de passe</label>
+            <input type="password" required placeholder="••••••••" value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)} className={inputClass} />
           </div>
 
-          <button
+          <motion.button
+            whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.98 }}
             type="submit"
-            className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-2.5 px-4 rounded-xl transition text-sm mt-2"
+            className="w-full font-semibold py-3 rounded-lg transition text-sm mt-2"
+            style={{ background: 'linear-gradient(90deg, #FFD700, #FF8C00)', color: '#1a1400' }}
           >
             Créer mon compte
-          </button>
+          </motion.button>
 
           <div className="mt-2">
-            <div className="relative flex items-center justify-center mb-3">
-              <div className="border-t border-gray-200 w-full" />
-              <span className="px-3 text-gray-400 text-xs bg-white absolute">ou</span>
+            <div className="relative flex items-center justify-center mb-4">
+              <div className="w-full h-px" style={{ background: 'rgba(255,255,255,0.1)' }} />
+              <span className="px-3 text-xs absolute" style={{ background: 'var(--brand-dark)', color: 'var(--text-muted)' }}>ou</span>
             </div>
             <button
               type="button"
-              onClick={() =>
-                window.location.href = `${process.env.NEXT_PUBLIC_SSO_URL}/auth/google?platform=codalog`
-              }
-              className="w-full flex items-center justify-center gap-3 py-2.5 px-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition text-sm text-gray-700 font-medium"
+              onClick={() => window.location.href = `${process.env.NEXT_PUBLIC_SSO_URL}/auth/google?platform=codalog`}
+              className="w-full flex items-center justify-center gap-3 py-3 rounded-lg transition text-sm font-medium"
+              style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.14)', color: 'var(--brand-white)' }}
             >
               <svg width="18" height="18" viewBox="0 0 48 48">
                 <path fill="#FFC107" d="M43.6 20H24v8h11.3C33.6 33.1 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-4z"/>
@@ -129,17 +134,14 @@ export default function RegisterScreen() {
             </button>
           </div>
 
-          <p className="text-sm text-center text-gray-500 mt-2">
+          <p className="text-sm text-center mt-2" style={{ color: 'var(--text-secondary)' }}>
             Déjà un compte ?{" "}
-            <Link
-              href={`/signin?redirect=${redirect}`}
-              className="text-yellow-500 hover:underline font-medium"
-            >
+            <Link href={`/signin?redirect=${redirect}`} className="font-medium hover:underline" style={{ color: 'var(--brand-cyan)' }}>
               Se connecter
             </Link>
           </p>
         </form>
-      </div>
+      </motion.div>
     </div>
   );
 }
