@@ -1,7 +1,7 @@
 import express from 'express'
 import Inscription from '../models/inscriptionModel.js'
 import { isAuth, isAdmin } from '../utils.js'
-import User from '../models/userModel.js';
+import User from '../models/userModel.js'
 
 const router = express.Router()
 
@@ -15,19 +15,18 @@ router.post('/', isAuth, async (req, res) => {
   try {
     const newInscription = new Inscription({
       ...req.body,
-      user: req.user._id,
-      niveauId: req.body.niveauId || null,
-      sourceDecouverte: req.body.sourceDecouverte || null,
+      user:              req.user._id,
+      niveauId:          req.body.niveauId          || null,
+      sourceDecouverte:  req.body.sourceDecouverte  || null,
       newsletterConsent: req.body.newsletterConsent || false,
-      commentaireEleve: req.body.commentaireEleve || null,
+      commentaireEleve:  req.body.commentaireEleve  || null,
     })
     await newInscription.save()
+
     const populated = await Inscription.findById(newInscription._id)
       .populate('niveauId', 'nom categorie systeme equivalenceFrance')
-    res.status(201).json({
-      message: 'Inscription enregistrée',
-      inscription: populated,
-    })
+
+    res.status(201).json({ message: 'Inscription enregistrée', inscription: populated })
   } catch (error) {
     console.error(error)
     res.status(500).json({ error: "Erreur lors de l'enregistrement" })
@@ -47,30 +46,50 @@ router.get('/mine', isAuth, async (req, res) => {
 })
 
 // PUT /complete — compléter le profil utilisateur
+// Utilise findByIdAndUpdate + $set pour éviter la revalidation
+// du champ password (absent pour les comptes Google OAuth)
 router.put('/complete', isAuth, async (req, res) => {
   try {
-    const user = await User.findById(req.user._id)
-    if (!user) return res.status(404).json({ message: 'Utilisateur non trouvé' })
+    const update = {
+      $set: {
+        nom:                   req.body.nom               ?? undefined,
+        prenom:                req.body.prenom            ?? undefined,
+        email:                 req.body.email             ?? undefined,
+        tel:                   req.body.tel               ?? undefined,
+        niveauId:              req.body.niveauId          ?? undefined,
+        sourceDecouverte:      req.body.sourceDecouverte  ?? undefined,
+        newsletterConsent:     req.body.newsletterConsent ?? undefined,
+        isInscriptionComplete: true,
+      },
+    }
 
-    user.nom = req.body.nom || user.nom
-    user.prenom = req.body.prenom || user.prenom
-    user.email = req.body.email || user.email
-    user.tel = req.body.tel || user.tel
-    user.niveauId = req.body.niveauId || user.niveauId
-    user.sourceDecouverte = req.body.sourceDecouverte || user.sourceDecouverte
-    user.newsletterConsent = req.body.newsletterConsent ?? user.newsletterConsent
-    user.isInscriptionComplete = true
+    // Nettoyer les undefined pour ne pas écraser des valeurs existantes
+    Object.keys(update.$set).forEach(
+      (k) => update.$set[k] === undefined && delete update.$set[k]
+    )
 
-    const updatedUser = await user.save()
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      update,
+      {
+        new:             true,   // retourner le document mis à jour
+        runValidators:   false,  // ne pas revalider password/etc.
+      }
+    )
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'Utilisateur non trouvé' })
+    }
+
     console.log(`✅ User ${updatedUser._id} — niveauId: ${updatedUser.niveauId}`)
 
     res.json({
-      _id: updatedUser._id,
-      name: updatedUser.name,
-      email: updatedUser.email,
-      isAdmin: updatedUser.isAdmin,
+      _id:                   updatedUser._id,
+      name:                  updatedUser.name,
+      email:                 updatedUser.email,
+      isAdmin:               updatedUser.isAdmin,
       isInscriptionComplete: updatedUser.isInscriptionComplete,
-      niveauId: updatedUser.niveauId,
+      niveauId:              updatedUser.niveauId,
     })
   } catch (error) {
     console.error('Erreur completion profil:', error)
@@ -136,7 +155,7 @@ router.put('/:id/status', isAuth, isAdmin, async (req, res) => {
   try {
     const inscription = await Inscription.findById(req.params.id)
     if (!inscription) return res.status(404).json({ message: 'Introuvable' })
-    inscription.status = req.body.status || inscription.status
+    inscription.status           = req.body.status           || inscription.status
     inscription.commentaireAdmin = req.body.commentaireAdmin || inscription.commentaireAdmin
     const updated = await inscription.save()
     res.json(updated)
