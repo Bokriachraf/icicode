@@ -33,6 +33,8 @@ export default function AuthCallback() {
       isAdmin: payload.isAdmin,
       role: payload.role,
       roles: payload.roles,
+      isInscriptionComplete: payload.isInscriptionComplete || false,
+      niveauId: payload.niveauId || null,
       token,
     };
 
