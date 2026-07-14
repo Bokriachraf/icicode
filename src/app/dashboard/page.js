@@ -17,22 +17,32 @@ export default function Dashboard() {
   const { userInfo } = useSelector((state) => state.userSignin);
   const { loading: loadingChapitres, chapitres = [] } = useSelector((state) => state.chapitreList);
   const { loading: loadingSeances, seances = [] } = useSelector((state) => state.seanceList);
-  const [abonnement, setAbonnement] = useState(null);
+  const [abonnementsActifs, setAbonnementsActifs] = useState(new Set()); // Set de niveauId
+  const [aAuMoinsUnAbonnement, setAAuMoinsUnAbonnement] = useState(null); // null = pas encore chargé
 
   useEffect(() => {
     if (!userInfo) return;
-    Axios.get(`${API}/api/abonnements/mon`, {
+    Axios.get(`${API}/api/abonnements/mes`, {
       headers: { Authorization: `Bearer ${userInfo.token}` },
     })
-      .then(({ data }) => setAbonnement(data || null))
-      .catch(() => setAbonnement(null));
+      .then(({ data }) => {
+        const abonnements = Array.isArray(data) ? data : [];
+        const actifs = abonnements.filter(a => a.statut === 'actif' && new Date(a.dateEcheance) >= new Date());
+        const niveaux = new Set(
+          actifs.map(a => (a.planId?.niveauId?._id || a.planId?.niveauId)?.toString()).filter(Boolean)
+        );
+        setAbonnementsActifs(niveaux);
+        setAAuMoinsUnAbonnement(actifs.length > 0);
+      })
+      .catch(() => { setAbonnementsActifs(new Set()); setAAuMoinsUnAbonnement(false); });
   }, [userInfo]);
 
   useEffect(() => {
     if (!userInfo) { router.push('/signin'); return; }
-    // Ne charger les chapitres que si l'élève est inscrit et a un niveau
-    if (userInfo.isInscriptionComplete && userInfo.niveauId) {
-      dispatch(listChapitres(userInfo.niveauId));
+    // On charge TOUS les chapitres (pas filtrés à un seul niveau) : un élève peut
+    // suivre plusieurs formations, l'intersection avec ses séances fait le tri ensuite.
+    if (userInfo.isInscriptionComplete) {
+      dispatch(listChapitres());
       dispatch(listSeances());
     }
   }, [dispatch, userInfo]);
@@ -64,8 +74,8 @@ export default function Dashboard() {
         </p>
       </motion.div>
 
-      {/* Rappel abonnement si inscrit mais pas abonné */}
-      {userInfo.isInscriptionComplete && !abonnement && (
+      {/* Rappel abonnement si inscrit mais aucun abonnement actif */}
+      {userInfo.isInscriptionComplete && aAuMoinsUnAbonnement === false && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -180,10 +190,10 @@ export default function Dashboard() {
                 <span className="brand-badge brand-badge-cyan">🐍 Python</span>
               </div>
 
-              <Link href={abonnement ? `/chapitres/${chapitre._id}` : '/abonnement'}>
-                <button className={`w-full justify-center mt-auto ${abonnement ? 'brand-btn' : ''}`}
-                  style={!abonnement ? { background: 'rgba(255,255,255,0.06)', color: 'var(--text-secondary)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '0.75rem', padding: '0.65rem 1rem', fontWeight: 600, fontSize: '0.875rem' } : {}}>
-                  {abonnement ? 'Commencer' : '🔒 Débloquer'}
+              <Link href={abonnementsActifs.has((chapitre.niveauId?._id || chapitre.niveauId)?.toString()) ? `/chapitres/${chapitre._id}` : '/abonnement'}>
+                <button className={`w-full justify-center mt-auto ${abonnementsActifs.has((chapitre.niveauId?._id || chapitre.niveauId)?.toString()) ? 'brand-btn' : ''}`}
+                  style={!abonnementsActifs.has((chapitre.niveauId?._id || chapitre.niveauId)?.toString()) ? { background: 'rgba(255,255,255,0.06)', color: 'var(--text-secondary)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '0.75rem', padding: '0.65rem 1rem', fontWeight: 600, fontSize: '0.875rem' } : {}}>
+                  {abonnementsActifs.has((chapitre.niveauId?._id || chapitre.niveauId)?.toString()) ? 'Commencer' : '🔒 Débloquer'}
                 </button>
               </Link>
             </motion.div>

@@ -25,7 +25,7 @@ chapitreRouter.get(
 chapitreRouter.get(
   '/:id',
   isAuth,
-  hasActiveAbonnement,
+  hasActiveAbonnement.parChapitreParam('id'),
   expressAsyncHandler(async (req, res) => {
     const chapitre = await Chapitre.findById(req.params.id)
       .populate('niveauId', 'nom equivalenceFrance')

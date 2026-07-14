@@ -142,7 +142,10 @@ paiementRouter.post('/virement/demander', isAuth, expressAsyncHandler(async (req
 // ── GET /api/paiements/mes — historique élève ─────────────────────────────────
 paiementRouter.get('/mes', isAuth, expressAsyncHandler(async (req, res) => {
   const paiements = await Paiement.find({ eleveId: req.user._id })
-    .populate({ path: 'abonnementId', populate: { path: 'planId', select: 'nom prix' } })
+    .populate({
+      path: 'abonnementId',
+      populate: { path: 'planId', select: 'nom prix niveauId', populate: { path: 'niveauId', select: 'nom' } },
+    })
     .sort({ createdAt: -1 });
   res.json(paiements);
 }));

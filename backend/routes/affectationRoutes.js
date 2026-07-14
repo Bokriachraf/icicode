@@ -2,9 +2,21 @@ import express from 'express';
 import expressAsyncHandler from 'express-async-handler';
 import Affectation from '../models/affectationModel.js';
 import Groupe from '../models/groupeModel.js';
+import Abonnement from '../models/abonnementModel.js';
+import Plan from '../models/planModel.js';
 import { isAuth, isProf, hasActiveAbonnement } from '../utils.js';
 
 const affectationRouter = express.Router();
+
+// Récupère l'ensemble des niveauId pour lesquels l'élève a un abonnement actif
+const getNiveauxAbonnesActifs = async (eleveId) => {
+  const abonnements = await Abonnement.find({
+    eleveId,
+    statut: 'actif',
+    dateEcheance: { $gte: new Date() },
+  }).populate('planId', 'niveauId');
+  return new Set(abonnements.map(a => a.planId?.niveauId?.toString()).filter(Boolean));
+};
 
 // ── POST /api/affectations — créer une affectation (prof/admin) ──────────────
 affectationRouter.post(
@@ -73,12 +85,14 @@ affectationRouter.post(
 
 // ── GET /api/affectations/eleve — exercices affectés à l'élève connecté ──────
 // Agrège : affectations directes + via groupe + via séance du groupe
+// Filtré aux SEULES formations pour lesquelles l'élève a un abonnement actif
+// (un élève peut suivre plusieurs formations, seules celles payées remontent ici).
 affectationRouter.get(
   '/eleve',
   isAuth,
-  hasActiveAbonnement,
   expressAsyncHandler(async (req, res) => {
     const userId = req.user._id;
+    const estAdminOuProf = req.user.isAdmin || req.user.role === 'prof';
 
     // 1. Groupes de l'élève
     const groupes = await Groupe.find({ eleves: userId }).select('_id');
@@ -92,19 +106,28 @@ affectationRouter.get(
         { cible: 'seance', seanceId: { $ne: null } }, // filtré ci-dessous
       ],
     })
-      .populate('exerciceId')
+      .populate({ path: 'exerciceId', populate: { path: 'chapitreId', select: 'niveauId' } })
       .populate('seanceId', 'groupeId titre statut')
       .populate('groupeId', 'nom eleves')
       .sort({ createdAt: -1 });
 
     // 3. Filtrer les affectations séance : garder seulement si la séance appartient à un groupe de l'élève
     const groupeIdStrings = groupeIds.map(id => id.toString());
-    const filtered = affectations.filter(a => {
+    let filtered = affectations.filter(a => {
       if (a.cible === 'seance') {
         return groupeIdStrings.includes(a.seanceId?.groupeId?.toString());
       }
       return true;
     });
+
+    // 4. Filtrer aux formations abonnées (sauf admin/prof qui voient tout)
+    if (!estAdminOuProf) {
+      const niveauxActifs = await getNiveauxAbonnesActifs(userId);
+      filtered = filtered.filter(a => {
+        const niveauId = a.exerciceId?.chapitreId?.niveauId?.toString();
+        return niveauId && niveauxActifs.has(niveauId);
+      });
+    }
 
     res.json(filtered);
   })
@@ -114,7 +137,7 @@ affectationRouter.get(
 affectationRouter.get(
   '/eleve/:chapitreId',
   isAuth,
-  hasActiveAbonnement,
+  hasActiveAbonnement.parChapitreParam('chapitreId'),
   expressAsyncHandler(async (req, res) => {
     const userId = req.user._id;
     const { chapitreId } = req.params;

@@ -6,7 +6,8 @@ import { isAuth, isAdmin } from '../utils.js';
 
 const abonnementRouter = express.Router();
 
-// GET /api/abonnements/mon — abonnement actif de l'élève connecté
+// GET /api/abonnements/mon — abonnement actif de l'élève connecté (LEGACY, un seul)
+// À remplacer progressivement par /mes, qui gère le multi-formations.
 abonnementRouter.get('/mon', isAuth, expressAsyncHandler(async (req, res) => {
   // Expire automatiquement (en base) tout abonnement 'actif' dont l'échéance est dépassée
   await Abonnement.updateMany(
@@ -20,6 +21,20 @@ abonnementRouter.get('/mon', isAuth, expressAsyncHandler(async (req, res) => {
     dateEcheance: { $gte: new Date() },
   }).populate({ path: 'planId', populate: { path: 'niveauId', select: 'nom' } });
   res.json(abonnement || null);
+}));
+
+// GET /api/abonnements/mes — TOUS les abonnements de l'élève (tous statuts, toutes
+// formations) — utilisé par /abonnement côté front pour afficher un bloc par formation.
+abonnementRouter.get('/mes', isAuth, expressAsyncHandler(async (req, res) => {
+  await Abonnement.updateMany(
+    { eleveId: req.user._id, statut: 'actif', dateEcheance: { $lt: new Date() } },
+    { $set: { statut: 'expiré' } }
+  );
+
+  const abonnements = await Abonnement.find({ eleveId: req.user._id })
+    .populate({ path: 'planId', populate: { path: 'niveauId', select: 'nom' } })
+    .sort({ createdAt: -1 });
+  res.json(abonnements);
 }));
 
 // GET /api/abonnements/admin — tous (admin)

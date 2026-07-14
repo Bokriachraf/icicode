@@ -9,6 +9,7 @@ const planRouter = express.Router();
 planRouter.get('/', expressAsyncHandler(async (req, res) => {
   const filter = { actif: true };
   if (req.query.niveauId) filter.niveauId = req.query.niveauId;
+  if (req.query.formation) filter.formation = req.query.formation;
   const plans = await Plan.find(filter)
     .populate('niveauId', 'nom categorie equivalenceFrance')
     .sort({ createdAt: 1 });

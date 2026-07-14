@@ -38,7 +38,7 @@ progressionRouter.get(
 progressionRouter.post(
   '/demarrer',
   isAuth,
-  hasActiveAbonnement,
+  hasActiveAbonnement.parChapitreBody('chapitreId'),
   expressAsyncHandler(async (req, res) => {
     const { chapitreId } = req.body;
     let progression = await Progression.findOne({ userId: req.user._id, chapitreId });
@@ -58,7 +58,7 @@ progressionRouter.post(
 progressionRouter.put(
   '/terminer-math',
   isAuth,
-  hasActiveAbonnement,
+  hasActiveAbonnement.parChapitreBody('chapitreId'),
   expressAsyncHandler(async (req, res) => {
     const { chapitreId } = req.body;
     const chapitre = await Chapitre.findById(chapitreId);
@@ -82,7 +82,7 @@ progressionRouter.put(
 progressionRouter.post(
   '/soumettre',
   isAuth,
-  hasActiveAbonnement,
+  hasActiveAbonnement.parChapitreBody('chapitreId'),
   expressAsyncHandler(async (req, res) => {
     const { chapitreId, exerciceId, reponse, validation } = req.body;
 

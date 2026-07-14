@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 const planSchema = new mongoose.Schema(
   {
     nom: { type: String, required: true },
+    formation: { type: String, required: true }, // ex: "Mathématiques & Python", "Gaming"...
     niveauId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Niveau',

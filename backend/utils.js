@@ -1,5 +1,7 @@
 import jwt from 'jsonwebtoken';
 import Abonnement from './models/abonnementModel.js';
+import Plan from './models/planModel.js';
+import Chapitre from './models/chapitreModel.js';
 
 export const generateToken = (user) => {
   return jwt.sign(
@@ -87,22 +89,39 @@ export const isProf = (req, res, next) => {
 }
 
 // Middleware abonnement actif : bloque l'accès au contenu pédagogique tant que
-// l'élève n'a pas d'abonnement 'actif' avec une date d'échéance non dépassée.
+// l'élève n'a pas d'abonnement 'actif' pour LE NIVEAU CONCERNÉ (pas n'importe
+// quel abonnement — un élève peut suivre plusieurs formations, un abonnement
+// pour la formation A ne doit jamais donner accès à la formation B).
 // Les admins et profs passent toujours (ils n'ont pas besoin d'abonnement).
-export const hasActiveAbonnement = async (req, res, next) => {
+//
+// `resolveNiveauId(req)` doit renvoyer le niveauId concerné par la requête.
+// Si elle renvoie null/undefined, on refuse par prudence (mieux vaut bloquer
+// que laisser passer par erreur).
+export const hasActiveAbonnement = (resolveNiveauId) => async (req, res, next) => {
   if (req.user && (req.user.isAdmin || req.user.role === 'prof')) {
     return next();
   }
   try {
+    const niveauId = await resolveNiveauId(req);
+    if (!niveauId) {
+      return res.status(400).json({ message: 'Niveau introuvable pour ce contenu.' });
+    }
+
+    const plans = await Plan.find({ niveauId }).select('_id');
+    const planIds = plans.map((p) => p._id);
+
     const abonnement = await Abonnement.findOne({
       eleveId: req.user._id,
+      planId: { $in: planIds },
       statut: 'actif',
       dateEcheance: { $gte: new Date() },
     });
+
     if (!abonnement) {
       return res.status(402).json({
-        message: 'Un abonnement actif est requis pour accéder à ce contenu.',
+        message: 'Un abonnement actif pour cette formation est requis pour accéder à ce contenu.',
         code: 'ABONNEMENT_REQUIS',
+        niveauId,
       });
     }
     req.abonnement = abonnement;
@@ -111,3 +130,16 @@ export const hasActiveAbonnement = async (req, res, next) => {
     res.status(500).json({ message: 'Erreur de vérification de l\'abonnement.' });
   }
 };
+
+// Résolveurs prêts à l'emploi pour les cas les plus courants
+hasActiveAbonnement.parChapitreParam = (paramName = 'id') =>
+  hasActiveAbonnement(async (req) => {
+    const chapitre = await Chapitre.findById(req.params[paramName]).select('niveauId');
+    return chapitre?.niveauId || null;
+  });
+
+hasActiveAbonnement.parChapitreBody = (fieldName = 'chapitreId') =>
+  hasActiveAbonnement(async (req) => {
+    const chapitre = await Chapitre.findById(req.body[fieldName]).select('niveauId');
+    return chapitre?.niveauId || null;
+  });

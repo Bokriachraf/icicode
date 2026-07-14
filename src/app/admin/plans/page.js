@@ -18,8 +18,20 @@ export default function AdminPlansPage() {
   const [saving,   setSaving]   = useState(false)
   const [msg,      setMsg]      = useState(null)
 
-  const emptyForm = { nom: '', niveauId: '', prix: '', dureeEngagement: 1, description: '', actif: true }
+  const emptyForm = { nom: '', formation: '', niveauId: '', prix: '', dureeEngagement: 1, description: '', actif: true }
   const [form, setForm] = useState(emptyForm)
+
+  const FORMATIONS = [
+    'Développement Web',
+    'Développement Mobile',
+    'IA & Machine Learning',
+    'Data Science',
+    'Data Analysis',
+    'Mathématiques & Python',
+    'Gaming',
+    'Digital Marketing',
+    'Management',
+  ]
 
   const cfg = { headers: { Authorization: `Bearer ${userInfo?.token}` } }
 
@@ -39,7 +51,7 @@ export default function AdminPlansPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!form.niveauId || !form.prix || !form.nom) return setMsg('❌ Remplissez tous les champs obligatoires.')
+    if (!form.niveauId || !form.formation || !form.prix || !form.nom) return setMsg('❌ Remplissez tous les champs obligatoires.')
     setSaving(true)
     try {
       if (editing) {
@@ -59,7 +71,7 @@ export default function AdminPlansPage() {
   }
 
   const editPlan = (p) => {
-    setForm({ nom: p.nom, niveauId: p.niveauId?._id || p.niveauId, prix: p.prix, dureeEngagement: p.dureeEngagement, description: p.description || '', actif: p.actif })
+    setForm({ nom: p.nom, formation: p.formation || '', niveauId: p.niveauId?._id || p.niveauId, prix: p.prix, dureeEngagement: p.dureeEngagement, description: p.description || '', actif: p.actif })
     setEditing(p._id)
     setShowForm(true)
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -113,6 +125,16 @@ export default function AdminPlansPage() {
               <input type="text" value={form.nom} onChange={e => setF('nom', e.target.value)} className={inputClass} placeholder="Ex: BAC Math & Python" />
             </div>
             <div>
+              <label className={labelClass}>Formation *</label>
+              <select value={form.formation} onChange={e => setF('formation', e.target.value)} className={inputClass}>
+                <option value="">-- Choisir --</option>
+                {FORMATIONS.map(f => <option key={f} value={f}>{f}</option>)}
+              </select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
               <label className={labelClass}>Niveau *</label>
               <select value={form.niveauId} onChange={e => setF('niveauId', e.target.value)} className={inputClass}>
                 <option value="">-- Choisir --</option>
@@ -121,22 +143,20 @@ export default function AdminPlansPage() {
                 {univ.length > 0    && <optgroup label="Université">{univ.map(n => <option key={n._id} value={n._id}>{n.nom}</option>)}</optgroup>}
               </select>
             </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
             <div>
               <label className={labelClass}>Prix (TND/mois) *</label>
               <input type="number" min="1" value={form.prix} onChange={e => setF('prix', parseInt(e.target.value))} className={inputClass} />
             </div>
-            <div>
-              <label className={labelClass}>Durée d'engagement</label>
-              <select value={form.dureeEngagement} onChange={e => setF('dureeEngagement', parseInt(e.target.value))} className={inputClass}>
-                <option value={1}>1 mois</option>
-                <option value={3}>3 mois</option>
-                <option value={6}>6 mois</option>
-                <option value={12}>12 mois</option>
-              </select>
-            </div>
+          </div>
+
+          <div>
+            <label className={labelClass}>Durée d'engagement</label>
+            <select value={form.dureeEngagement} onChange={e => setF('dureeEngagement', parseInt(e.target.value))} className={inputClass}>
+              <option value={1}>1 mois</option>
+              <option value={3}>3 mois</option>
+              <option value={6}>6 mois</option>
+              <option value={12}>12 mois</option>
+            </select>
           </div>
 
           <div>
@@ -173,6 +193,11 @@ export default function AdminPlansPage() {
                         <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${categorieColor[p.niveauId?.categorie]}`}>
                           {p.niveauId?.nom}
                         </span>
+                        {p.formation && (
+                          <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 ml-1">
+                            {p.formation}
+                          </span>
+                        )}
                         <h3 className="font-bold text-gray-800 mt-2">{p.nom}</h3>
                       </div>
                       <div className="text-right">
