@@ -11,18 +11,18 @@ const lineVariants = {
 }
 
 const NIVEAUX = [
-  { icon: '🏫', label: 'Collège', desc: "Premiers pas en algorithmique et logique mathématique, dès la 7ème année." },
-  { icon: '🎓', label: 'Lycée', desc: "Suites, fonctions, probabilités — approfondis avec Python, prépare ton BAC." },
+  { icon: '🏫', label: 'Collège',     desc: "Premiers pas en algorithmique et logique mathématique, dès la 7ème année." },
+  { icon: '🎓', label: 'Lycée',       desc: "Suites, fonctions, probabilités — approfondis avec Python, prépare ton BAC." },
   { icon: '🏛️', label: 'Université', desc: "Computational Thinking avancé : la base de l'IA, la Data Science et l'ingénierie." },
 ]
 
 const FORMATIONS = [
-  { name: 'Mathématiques & Python', img: '/mathpy.png', badge: 'Fondation' },
-  { name: 'Développement Web', img: '/web.jpeg' },
-  { name: 'IA & Machine Learning', img: '/ia.jpg' },
-  { name: 'Gaming', img: '/gaming.jpeg' },
-  { name: 'Blockchain & Sécurité', img: '/blockchain.jpg' },
-  { name: 'Digital Marketing', img: '/marketing.webp' },
+  { name: 'Mathématiques & Python', img: '/mathpy.png',     badge: 'Fondation', href: '/formations/mathematiques-python' },
+  { name: 'Développement Web',      img: '/web.jpeg',                            href: '/formations/developpement-web' },
+  { name: 'IA & Machine Learning',  img: '/ia.jpg',                              href: '/formations/intelligence-artificielle' },
+  { name: 'Gaming',                 img: '/gaming.jpeg',                         href: '/formations/gaming' },
+  { name: 'Blockchain & Sécurité',  img: '/blockchain.jpg',                      href: '/formations/blockchain' },
+  { name: 'Digital Marketing',      img: '/marketing.webp',                      href: '/formations/marketing-digital' },
 ]
 
 export default function Home() {
@@ -129,8 +129,8 @@ export default function Home() {
           <div className="grid sm:grid-cols-3 gap-5">
             {[
               { icon: '🧩', title: 'Logique algorithmique', text: 'Décomposer, généraliser, automatiser un raisonnement.' },
-              { icon: '📐', title: 'Maths appliquées', text: 'Suites, fonctions, probabilités — reliées à du code concret.' },
-              { icon: '🐍', title: 'Python dès le départ', text: 'Chaque notion mathématique se traduit immédiatement en code.' },
+              { icon: '📐', title: 'Maths appliquées',      text: 'Suites, fonctions, probabilités — reliées à du code concret.' },
+              { icon: '🐍', title: 'Python dès le départ',  text: 'Chaque notion mathématique se traduit immédiatement en code.' },
             ].map((f, i) => (
               <motion.div
                 key={f.title}
@@ -174,12 +174,28 @@ export default function Home() {
                 </div>
                 <div className="p-5 flex-1 flex flex-col justify-between gap-3">
                   <h3 className="font-semibold" style={{ color: 'var(--brand-white)' }}>{f.name}</h3>
-                  <Link href="/formations" className="text-sm font-medium self-start" style={{ color: 'var(--brand-cyan)' }}>
+                  <Link
+                    href={f.href}
+                    className="text-sm font-medium self-start hover:underline"
+                    style={{ color: 'var(--brand-cyan)' }}
+                  >
                     Découvrir →
                   </Link>
                 </div>
               </motion.div>
             ))}
+          </div>
+
+          {/* Voir toutes les formations */}
+          <div className="text-center mt-10">
+            <Link href="/formations">
+              <motion.button
+                whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+                className="brand-btn"
+              >
+                Voir toutes les formations →
+              </motion.button>
+            </Link>
           </div>
         </div>
       </section>
@@ -188,9 +204,9 @@ export default function Home() {
       <section className="relative z-10 py-20" style={{ background: 'var(--brand-dark)', borderTop: '1px solid var(--border-card)', borderBottom: '1px solid var(--border-card)' }}>
         <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-6">
           {[
-            { icon: '🛠️', title: 'Projets concrets', text: 'Des exercices et projets réels, pas juste de la théorie.' },
-            { icon: '👨‍🏫', title: 'Suivi personnalisé', text: 'Un formateur suit ta progression, chapitre par chapitre.' },
-            { icon: '🎯', title: 'De l\'école à l\'emploi', text: 'Des bases solides au collège jusqu\'aux compétences pros à l\'université.' },
+            { icon: '🛠️', title: 'Projets concrets',       text: 'Des exercices et projets réels, pas juste de la théorie.' },
+            { icon: '👨‍🏫', title: 'Suivi personnalisé',    text: 'Un formateur suit ta progression, chapitre par chapitre.' },
+            { icon: '🎯', title: "De l'école à l'emploi",  text: "Des bases solides au collège jusqu'aux compétences pros à l'université." },
           ].map((item, i) => (
             <motion.div
               key={item.title}
@@ -217,7 +233,7 @@ export default function Home() {
           </h2>
           <div className="grid md:grid-cols-2 gap-6">
             {[
-              { name: 'Sami, Terminale', text: "Les suites et les probas sont enfin claires depuis que je les code en Python avec Codalog." },
+              { name: 'Sami, Terminale',  text: "Les suites et les probas sont enfin claires depuis que je les code en Python avec Codalog." },
               { name: 'Ines, Université', text: "Le Computational Thinking appris ici m'a vraiment aidée à démarrer en Data Science." },
             ].map((t, i) => (
               <motion.div
@@ -245,11 +261,15 @@ export default function Home() {
           Collège, lycée ou université — commence dès aujourd'hui, gratuitement.
         </p>
         <Link href="/inscription">
-          <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} className="brand-btn brand-btn-gold text-base px-8 py-3">
+          <motion.button
+            whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
+            className="brand-btn brand-btn-gold text-base px-8 py-3"
+          >
             Commencer gratuitement →
           </motion.button>
         </Link>
       </section>
+
     </div>
   )
 }

@@ -5,6 +5,16 @@ import Link from 'next/link'
 
 const formations = [
   {
+    titre: 'Mathématiques & Python',
+    description: "Chaque notion mathématique codée et visualisée en Python — du collège au BAC.",
+    image: '/mathpy.png',
+    duree: '8 semaines',
+    niveau: 'Tous niveaux',
+    prix: 'Sur demande',
+    badge: 'cyan',
+    href: '/formations/mathematiques-python',
+  },
+  {
     titre: 'Développement Web Fullstack',
     description: "Maîtrisez HTML, CSS, JavaScript, React, Node.js, MongoDB pour créer des applications web modernes.",
     image: '/web.jpeg',
@@ -12,15 +22,7 @@ const formations = [
     niveau: 'Intermédiaire',
     prix: 'Sur demande',
     badge: 'blue',
-  },
-  {
-    titre: 'Développement Mobile',
-    description: "Créez des applications Android & iOS avec Flutter ou React Native.",
-    image: '/mobile.jpg',
-    duree: '8 semaines',
-    niveau: 'Débutant',
-    prix: 'Sur demande',
-    badge: 'cyan',
+    href: '/formations/developpement-web',
   },
   {
     titre: 'Intelligence Artificielle & ML',
@@ -30,15 +32,17 @@ const formations = [
     niveau: 'Avancé',
     prix: 'Sur demande',
     badge: 'gold',
+    href: '/formations/intelligence-artificielle',
   },
   {
-    titre: 'Data Science & Analyse',
-    description: "Manipulez des datasets, créez des dashboards et racontez des histoires avec les données.",
-    image: '/data.jpg',
-    duree: '10 semaines',
-    niveau: 'Intermédiaire',
+    titre: 'Développement Mobile',
+    description: "Créez des applications Android & iOS avec Flutter ou React Native.",
+    image: '/mobile.jpg',
+    duree: '8 semaines',
+    niveau: 'Débutant',
     prix: 'Sur demande',
-    badge: 'blue',
+    badge: 'cyan',
+    href: '/formations/developpement-mobile',
   },
   {
     titre: 'Gaming & Game Development',
@@ -47,23 +51,25 @@ const formations = [
     duree: '8 semaines',
     niveau: 'Tous niveaux',
     prix: 'Sur demande',
-    badge: 'cyan',
+    badge: 'blue',
+    href: '/formations/gaming',
   },
   {
-    titre: 'Marketing Digital & Management',
+    titre: 'Marketing Digital',
     description: "Gérez une stratégie marketing digitale, le SEO, les réseaux sociaux et l'analyse des campagnes.",
     image: '/marketing.webp',
     duree: '6 semaines',
     niveau: 'Tous niveaux',
     prix: 'Sur demande',
     badge: 'gold',
+    href: '/formations/marketing-digital',
   },
 ]
 
 const badgeStyle = {
   blue: { background: 'rgba(74,144,226,0.12)', border: '1px solid rgba(74,144,226,0.35)', color: '#4A90E2' },
-  cyan: { background: 'rgba(0,255,209,0.08)', border: '1px solid rgba(0,255,209,0.28)', color: '#00FFD1' },
-  gold: { background: 'rgba(255,215,0,0.1)',  border: '1px solid rgba(255,215,0,0.3)',  color: '#FFD700' },
+  cyan: { background: 'rgba(0,255,209,0.08)',  border: '1px solid rgba(0,255,209,0.28)',  color: '#00FFD1' },
+  gold: { background: 'rgba(255,215,0,0.1)',   border: '1px solid rgba(255,215,0,0.3)',   color: '#FFD700' },
 }
 
 export default function FormationsPage() {
@@ -101,15 +107,17 @@ export default function FormationsPage() {
                 alt={formation.titre}
                 fill
                 style={{ objectFit: 'cover', transition: 'transform 0.4s' }}
-                onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.04)')}
-                onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')}
               />
-              {/* Overlay gradient sur l'image */}
-              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 50%, rgba(0,13,26,0.7) 100%)' }} />
+              <div style={{
+                position: 'absolute', inset: 0,
+                background: 'linear-gradient(to bottom, transparent 50%, rgba(0,13,26,0.75) 100%)'
+              }} />
             </div>
 
             {/* Contenu */}
             <div style={{ padding: '18px 20px', display: 'flex', flexDirection: 'column', gap: '10px', flex: 1 }}>
+
+              {/* Titre + badge niveau */}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px' }}>
                 <h2 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--brand-white)', lineHeight: 1.3 }}>
                   {formation.titre}
@@ -128,16 +136,32 @@ export default function FormationsPage() {
 
               <hr className="brand-divider" style={{ margin: '4px 0' }} />
 
+              {/* Durée + prix */}
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
                 <span>⏱ {formation.duree}</span>
                 <span style={{ color: 'var(--brand-cyan)' }}>💰 {formation.prix}</span>
               </div>
 
-              <Link href="/inscription">
-                <button className="brand-btn" style={{ width: '100%', justifyContent: 'center', marginTop: '4px' }}>
-                  S'inscrire →
-                </button>
-              </Link>
+              {/* Boutons — Découvrir + S'inscrire */}
+              <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
+                <Link href={formation.href} style={{ flex: 1 }}>
+                  <button
+                    className="brand-btn"
+                    style={{ width: '100%', justifyContent: 'center' }}
+                  >
+                    Découvrir →
+                  </button>
+                </Link>
+                <Link href="/inscription" style={{ flex: 1 }}>
+                  <button
+                    className="brand-btn brand-btn-gold"
+                    style={{ width: '100%', justifyContent: 'center' }}
+                  >
+                    S'inscrire
+                  </button>
+                </Link>
+              </div>
+
             </div>
           </div>
         ))}
